@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payments</title>
+  <link rel="stylesheet" href="../../shared/css/globals.css" />
+  <link rel="stylesheet" href="../../shared/css/styleguide.css" />
+  <link rel="stylesheet" href="../../shared/css/components.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+</head>
+<body>
+<nav class="navbar">
+  <div class="container navbar-inner">
+    <a href="../../home/html/index.html" class="nav-logo">LuxeStay</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Menu"><span></span><span></span><span></span></label>
+    <ul class="nav-links"><li><a href="../../home/html/index.html">Home</a></li><li><a href="../../hotels/html/hotels.html">Hotels</a></li><li><a href="../../offers/html/offers.html">Offers</a></li><li><a href="../../destinations/html/destinations.html">Destinations</a></li><li><a href="../../contact/html/contact.html">Contact</a></li><li><a href="../../about/html/about.html">About</a></li></ul>
+    <div class="nav-auth">
+      <a href="../../auth/html/signup.html" class="btn btn-outline-teal btn-sm">Sign Up</a>
+      <a href="../../auth/html/login.html" class="btn btn-teal btn-sm">Login</a>
+    </div>
+  </div>
+</nav>
+<div class="dashboard-layout"><aside class="dashboard-sidebar">
+  <div class="sidebar-user">
+    <div class="avatar avatar-lg">EA</div>
+    <div class="sidebar-user-name">Eren Akpinar</div>
+    <div class="sidebar-user-email">eren@example.com</div>
+    <span class="tier-badge tier-gold">Gold Member</span>
+  </div>
+  <nav><ul class="sidebar-nav"><li><a href="./index.html" class="sidebar-nav-link">Overview</a></li><li><a href="./bookings.html" class="sidebar-nav-link">My Bookings</a></li><li><a href="./saved.html" class="sidebar-nav-link">Saved Hotels</a></li><li><a href="./profile.html" class="sidebar-nav-link">Profile</a></li><li><a href="./notifications.html" class="sidebar-nav-link">Notifications</a></li><li><a href="./payment-methods.html" class="sidebar-nav-link active">Payment Methods</a></li><li><a href="./reviews.html" class="sidebar-nav-link">My Reviews</a></li><li><a href="./rewards.html" class="sidebar-nav-link">Rewards</a></li></ul></nav>
+  <a href="../../auth/html/login.html" class="sidebar-signout">Sign Out</a>
+</aside>
+<div class="dashboard-main"><div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title">Payment Methods</h1>
+          <p class="dashboard-subtitle">Manage your saved cards and billing details.</p>
+        </div>
+        <button class="btn btn-teal" id="add-card-btn">+ Add Card</button>
+      </div>
+
+      <!-- Saved cards -->
+      <div id="cards-list">
+        <p style="color:var(--muted);"><article class="booking-card">
+  <div class="booking-card-img"><img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=200&q=80" alt="Hotel" /></div>
+  <div class="booking-card-body">
+    <div class="booking-card-top">
+      <div><div class="booking-card-hotel">Azure Coast Resort &amp; Spa</div><div class="booking-card-loc">Antalya, Turkey</div></div>
+      <span class="status-badge status-upcoming">UPCOMING</span>
+    </div>
+    <div class="booking-card-meta"><span>15–20 May 2026</span><span>Deluxe Sea View</span></div>
+    <div class="booking-card-footer"><strong>$1,044</strong> · LXS-2026-84729</div>
+  </div>
+</article></p>
+      </div>
+
+      <!-- Add card form (hidden by default) -->
+      <div class="profile-section" id="add-card-form" style="display:none;margin-top:24px;">
+        <h3 style="margin-bottom:20px;">Add New Card</h3>
+        <div class="form-group">
+          <label class="form-label">Name on Card</label>
+          <input type="text" class="form-input" id="nc-name" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Card Number</label>
+          <input type="text" class="form-input" id="nc-number" placeholder="1234 5678 9012 3456" maxlength="19" inputmode="numeric">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Expiry</label>
+            <input type="text" class="form-input" id="nc-expiry" placeholder="MM / YY" maxlength="7">
+          </div>
+          <div class="form-group">
+            <label class="form-label">CVV</label>
+            <input type="text" class="form-input" id="nc-cvv" placeholder="•••" maxlength="4" inputmode="numeric">
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:8px;">
+          <button class="btn btn-teal" id="save-card-btn">Save Card</button>
+          <button class="btn btn-ghost" id="cancel-card-btn">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Billing history -->
+      <div class="profile-section" style="margin-top:32px;">
+        <h3 style="margin-bottom:20px;">Billing History</h3>
+        <div class="transaction-table-wrap">
+          <table class="transaction-table">
+            <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody id="billing-tbody">
+              <tr><td colspan="4" style="color:var(--muted);text-align:center;padding:24px;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div></div></div><footer class="footer">
+  <div class="container"><div class="footer-bottom"><div class="container">© 2026 LuxeStay</div></div></div>
+</footer>
+</body>
+</html>

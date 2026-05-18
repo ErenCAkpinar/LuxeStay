@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LuxeStay — Search Hotels</title>
+  <link rel="stylesheet" href="../../shared/css/globals.css" />
+  <link rel="stylesheet" href="../../shared/css/styleguide.css" />
+  <link rel="stylesheet" href="../../shared/css/components.css" />
+  <link rel="stylesheet" href="../css/hotels.css" />
+</head>
+<body>
+<nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="../../home/html/index.html" class="nav-logo">LuxeStay</a>
+
+      <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+      <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </label>
+
+      <ul class="nav-links">
+        <li><a href="../../home/html/index.html" >Home</a></li>
+        <li><a href="./hotels.html" class="active">Hotels</a></li>
+        <li><a href="../../offers/html/offers.html">Offers</a></li>
+        <li><a href="../../destinations/html/destinations.html">Destinations</a></li>
+        <li><a href="../../contact/html/contact.html">Contact</a></li>
+        <li><a href="../../about/html/about.html">About</a></li>
+      </ul>
+
+      <div class="nav-auth">
+        <a href="../../auth/html/signup.html" class="btn btn-outline-teal btn-sm">Sign Up</a>
+        <a href="../../auth/html/login.html" class="btn btn-teal btn-sm">Login</a>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- Top Search Bar -->
+  <div class="hotels-search-bar">
+    <div class="container">
+      <form class="hotels-search-inner" id="hotels-search-form" action="./hotels.html" method="get">
+        <div class="hotels-search-field" style="flex:2;">
+          <span>📍</span>
+          <input type="text" id="hs-destination" placeholder="Destination" value="">
+        </div>
+        <div class="hotels-search-field">
+          <span>📅</span>
+          <input type="date" id="hs-checkin">
+        </div>
+        <div class="hotels-search-field">
+          <span>📅</span>
+          <input type="date" id="hs-checkout">
+        </div>
+        <div class="hotels-search-field" style="flex:0.7;">
+          <span>👥</span>
+          <select id="hs-guests" style="border:none;outline:none;font-size:14px;background:none;">
+            <option value="1">1 Adult</option>
+            <option value="2" selected>2 Adults</option>
+            <option value="3">3 Adults</option>
+            <option value="4">4 Adults</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-teal">Modify Search</button>
+      </form>
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+      <div class="hotels-layout">
+
+        <!-- Filters Sidebar -->
+        <aside class="filters-panel">
+          <h3>Filters</h3>
+
+          <div class="filter-section">
+            <h4>Price Range</h4>
+            <div class="price-inputs">
+              <input type="number" class="price-input-field" id="f-min-price" placeholder="Min" value="50">
+              <span>—</span>
+              <input type="number" class="price-input-field" id="f-max-price" placeholder="Max" value="500">
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h4>Star Rating</h4>
+            <div class="filter-checkbox-list">
+              <label class="filter-checkbox"><input type="checkbox" value="5"> <span class="stars">★★★★★</span></label>
+              <label class="filter-checkbox"><input type="checkbox" value="4"> <span class="stars">★★★★</span>☆</label>
+              <label class="filter-checkbox"><input type="checkbox" value="3"> <span class="stars">★★★</span>☆☆</label>
+              <label class="filter-checkbox"><input type="checkbox" value="2"> <span class="stars">★★</span>☆☆☆</label>
+              <label class="filter-checkbox"><input type="checkbox" value="1"> <span class="stars">★</span>☆☆☆☆</label>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h4>Property Type</h4>
+            <div class="filter-checkbox-list">
+              <label class="filter-checkbox"><input type="checkbox" value="hotel"> Hotel</label>
+              <label class="filter-checkbox"><input type="checkbox" value="resort"> Resort</label>
+              <label class="filter-checkbox"><input type="checkbox" value="boutique"> Boutique</label>
+              <label class="filter-checkbox"><input type="checkbox" value="villa"> Villa</label>
+              <label class="filter-checkbox"><input type="checkbox" value="hostel"> Hostel</label>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h4>Amenities</h4>
+            <div class="filter-checkbox-list">
+              <label class="filter-checkbox"><input type="checkbox" value="pool"> Pool</label>
+              <label class="filter-checkbox"><input type="checkbox" value="spa"> Spa</label>
+              <label class="filter-checkbox"><input type="checkbox" value="wifi"> WiFi</label>
+              <label class="filter-checkbox"><input type="checkbox" value="parking"> Parking</label>
+              <label class="filter-checkbox"><input type="checkbox" value="restaurant"> Restaurant</label>
+              <label class="filter-checkbox"><input type="checkbox" value="gym"> Gym</label>
+              <label class="filter-checkbox"><input type="checkbox" value="beach"> Beach Access</label>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h4>Guest Rating</h4>
+            <div class="filter-checkbox-list">
+              <label class="filter-checkbox"><input type="radio" name="grating" value="9"> 9+ Exceptional</label>
+              <label class="filter-checkbox"><input type="radio" name="grating" value="8"> 8+ Very Good</label>
+              <label class="filter-checkbox"><input type="radio" name="grating" value="7"> 7+ Good</label>
+            </div>
+          </div>
+
+          <div class="filters-actions">
+            <button class="btn btn-teal btn-full" id="apply-filters-btn">Apply Filters</button>
+            <button class="btn btn-ghost btn-full" id="clear-filters-btn">Clear All</button>
+          </div>
+        </aside>
+
+        <!-- Results -->
+        <div>
+          <div class="results-header">
+            <div>
+              <div class="results-count" id="results-count"><strong>6</strong> <span>properties found</span></div>
+            </div>
+            <select class="sort-select" id="sort-select">
+              <option value="recommended">Recommended</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+            </select>
+          </div>
+
+          <div id="hotels-list">
+          <article class="hotel-list-card">
+            <div class="hotel-list-img"><img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80" alt="Azure Coast Resort &amp; Spa" loading="lazy" /></div>
+            <div class="hotel-list-body">
+              <h3 class="hotel-list-name">Azure Coast Resort &amp; Spa</h3>
+              <div class="hotel-list-location">📍 Antalya Beachfront, Turkey</div>
+              <div class="hotel-card-rating" style="margin-top:8px;"><span class="stars">★★★★★</span><span class="rating-num">4.8</span><span class="rating-count">(1,240 reviews)</span></div>
+              <div class="hotel-list-features"><span class="hotel-list-feature-tag">Pool</span><span class="hotel-list-feature-tag">WiFi</span><span class="hotel-list-feature-tag">Spa</span></div>
+            </div>
+            <div class="hotel-list-price">
+              <div><div class="hotel-list-price-old">$320 <span class="discount-badge">-25%</span></div><div class="hotel-list-price-current">$240</div><div class="hotel-list-price-unit">per night</div></div>
+              <a href="./hotel-detail.html?id=h1" class="btn btn-teal">View Deal</a>
+            </div>
+          </article>
+          <article class="hotel-list-card">
+            <div class="hotel-list-img"><img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80" alt="Grand Bosphorus Hotel" loading="lazy" /></div>
+            <div class="hotel-list-body">
+              <h3 class="hotel-list-name">Grand Bosphorus Hotel</h3>
+              <div class="hotel-list-location">📍 Istanbul, Turkey</div>
+              <div class="hotel-card-rating" style="margin-top:8px;"><span class="stars">★★★★★</span><span class="rating-num">4.7</span><span class="rating-count">(892 reviews)</span></div>
+              <div class="hotel-list-features"><span class="hotel-list-feature-tag">Pool</span><span class="hotel-list-feature-tag">WiFi</span><span class="hotel-list-feature-tag">Spa</span></div>
+            </div>
+            <div class="hotel-list-price">
+              <div><div class="hotel-list-price-old">$310 <span class="discount-badge">-28%</span></div><div class="hotel-list-price-current">$224</div><div class="hotel-list-price-unit">per night</div></div>
+              <a href="./hotel-detail.html?id=h2" class="btn btn-teal">View Deal</a>
+            </div>
+          </article>
+          <article class="hotel-list-card">
+            <div class="hotel-list-img"><img src="https://images.unsplash.com/photo-1601918774946-25832a4be0d6?w=600&q=80" alt="Cappadocia Cave Suites" loading="lazy" /></div>
+            <div class="hotel-list-body">
+              <h3 class="hotel-list-name">Cappadocia Cave Suites</h3>
+              <div class="hotel-list-location">📍 Cappadocia, Turkey</div>
+              <div class="hotel-card-rating" style="margin-top:8px;"><span class="stars">★★★★★</span><span class="rating-num">4.7</span><span class="rating-count">(850 reviews)</span></div>
+              <div class="hotel-list-features"><span class="hotel-list-feature-tag">Pool</span><span class="hotel-list-feature-tag">WiFi</span><span class="hotel-list-feature-tag">Spa</span></div>
+            </div>
+            <div class="hotel-list-price">
+              <div><div class="hotel-list-price-old">$210 <span class="discount-badge">-40%</span></div><div class="hotel-list-price-current">$126</div><div class="hotel-list-price-unit">per night</div></div>
+              <a href="./hotel-detail.html?id=h3" class="btn btn-teal">View Deal</a>
+            </div>
+          </article>
+          </div>
+          <div class="pagination"><button class="page-btn active">1</button><button class="page-btn">2</button></div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+
+<footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="../../home/html/index.html" class="footer-logo">LuxeStay</a>
+          <p class="footer-desc">Your trusted partner for luxury hotel bookings across Turkey and beyond.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="Twitter">🐦</a>
+            <a href="#" aria-label="Facebook">📘</a>
+            <a href="#" aria-label="YouTube">▶️</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="../../home/html/index.html">Home</a></li>
+            <li><a href="./hotels.html">Hotels</a></li>
+            <li><a href="../../destinations/html/destinations.html">Destinations</a></li>
+            <li><a href="../../offers/html/offers.html">Special Offers</a></li>
+            <li><a href="../../about/html/about.html">About Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul class="footer-links">
+            <li><a href="../../contact/html/contact.html">Contact Us</a></li>
+            <li><a href="../../contact/html/contact.html#faq">FAQs</a></li>
+            <li><a href="#">Cancellation Policy</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <div class="footer-contact-item">📞 +90 212 123 4567</div>
+          <div class="footer-contact-item">✉️ info@luxestay.com</div>
+          <div class="footer-contact-item">📍 Istanbul, Turkey</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">© 2026 LuxeStay. All rights reserved.</div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profile</title>
+  <link rel="stylesheet" href="../../shared/css/globals.css" />
+  <link rel="stylesheet" href="../../shared/css/styleguide.css" />
+  <link rel="stylesheet" href="../../shared/css/components.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+</head>
+<body>
+<nav class="navbar">
+  <div class="container navbar-inner">
+    <a href="../../home/html/index.html" class="nav-logo">LuxeStay</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Menu"><span></span><span></span><span></span></label>
+    <ul class="nav-links"><li><a href="../../home/html/index.html">Home</a></li><li><a href="../../hotels/html/hotels.html">Hotels</a></li><li><a href="../../offers/html/offers.html">Offers</a></li><li><a href="../../destinations/html/destinations.html">Destinations</a></li><li><a href="../../contact/html/contact.html">Contact</a></li><li><a href="../../about/html/about.html">About</a></li></ul>
+    <div class="nav-auth">
+      <a href="../../auth/html/signup.html" class="btn btn-outline-teal btn-sm">Sign Up</a>
+      <a href="../../auth/html/login.html" class="btn btn-teal btn-sm">Login</a>
+    </div>
+  </div>
+</nav>
+<div class="dashboard-layout"><aside class="dashboard-sidebar">
+  <div class="sidebar-user">
+    <div class="avatar avatar-lg">EA</div>
+    <div class="sidebar-user-name">Eren Akpinar</div>
+    <div class="sidebar-user-email">eren@example.com</div>
+    <span class="tier-badge tier-gold">Gold Member</span>
+  </div>
+  <nav><ul class="sidebar-nav"><li><a href="./index.html" class="sidebar-nav-link">Overview</a></li><li><a href="./bookings.html" class="sidebar-nav-link">My Bookings</a></li><li><a href="./saved.html" class="sidebar-nav-link">Saved Hotels</a></li><li><a href="./profile.html" class="sidebar-nav-link active">Profile</a></li><li><a href="./notifications.html" class="sidebar-nav-link">Notifications</a></li><li><a href="./payment-methods.html" class="sidebar-nav-link">Payment Methods</a></li><li><a href="./reviews.html" class="sidebar-nav-link">My Reviews</a></li><li><a href="./rewards.html" class="sidebar-nav-link">Rewards</a></li></ul></nav>
+  <a href="../../auth/html/login.html" class="sidebar-signout">Sign Out</a>
+</aside>
+<div class="dashboard-main"><div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title">My Profile</h1>
+          <p class="dashboard-subtitle">Manage your personal information and preferences.</p>
+        </div>
+      </div>
+
+      <!-- Avatar -->
+      <div class="profile-avatar-section">
+        <div class="avatar profile-avatar" id="profile-avatar-initials" style="width:80px;height:80px;font-size:28px;">—</div>
+        <div>
+          <div style="font-weight:700;font-size:18px;" id="profile-name-display">—</div>
+          <div style="font-size:13px;color:var(--muted);" id="profile-member-since">Member since —</div>
+        </div>
+      </div>
+
+      <!-- Personal Info -->
+      <div class="profile-section">
+        <div class="profile-section-header">
+          <h3>Personal Information</h3>
+          <button class="btn btn-ghost btn-sm" id="edit-profile-btn">Edit</button>
+        </div>
+        <form id="profile-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-input" id="p-first" disabled>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-input" id="p-last" disabled>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" id="p-email" disabled>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-input" id="p-phone" disabled placeholder="—">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nationality</label>
+            <input type="text" class="form-input" id="p-nationality" disabled placeholder="—">
+          </div>
+          <div id="profile-save-row" style="display:none;gap:12px;margin-top:8px;">
+            <button type="submit" class="btn btn-teal">Save Changes</button>
+            <button type="button" class="btn btn-ghost" id="cancel-profile-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Change Password -->
+      <div class="profile-section">
+        <div class="profile-section-header">
+          <h3>Change Password</h3>
+        </div>
+        <form id="password-form">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" class="form-input" id="pw-current" placeholder="••••••••">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input type="password" class="form-input" id="pw-new" placeholder="Min. 8 characters">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" class="form-input" id="pw-confirm" placeholder="Repeat password">
+            </div>
+          </div>
+          <div id="pw-error" class="auth-error" style="display:none;"></div>
+          <button type="submit" class="btn btn-teal">Update Password</button>
+        </form>
+      </div>
+
+      <!-- Preferences -->
+      <div class="profile-section">
+        <div class="profile-section-header"><h3>Preferences</h3></div>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-weight:600;">Marketing Emails</div><div style="font-size:13px;color:var(--muted);">Deals, offers and travel inspiration</div></div>
+            <label class="toggle"><input type="checkbox" id="pref-marketing" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-weight:600;">Booking Notifications</div><div style="font-size:13px;color:var(--muted);">Confirmations and reminders</div></div>
+            <label class="toggle"><input type="checkbox" id="pref-booking" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-weight:600;">Reward Updates</div><div style="font-size:13px;color:var(--muted);">Points earned, tier changes</div></div>
+            <label class="toggle"><input type="checkbox" id="pref-rewards" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="profile-section" style="border-color:var(--coral);">
+        <h3 style="color:var(--coral);">Danger Zone</h3>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">Deleting your account is permanent and cannot be undone.</p>
+        <button class="btn btn-outline-coral btn-sm">Delete My Account</button>
+      </div></div></div><footer class="footer">
+  <div class="container"><div class="footer-bottom"><div class="container">© 2026 LuxeStay</div></div></div>
+</footer>
+</body>
+</html>
