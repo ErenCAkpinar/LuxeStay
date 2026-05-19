@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Guest Details</title>
+  <link rel="stylesheet" href="{% static 'shared/css/globals.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/styleguide.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/components.css' %}" />
+  <link rel="stylesheet" href="{% static 'checkout/css/checkout.css' %}" />
+</head>
+<body>
+<nav class="navbar">
+  <div class="container navbar-inner">
+    <a href="/" class="nav-logo">LuxeStay</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Menu"><span></span><span></span><span></span></label>
+    <ul class="nav-links"><li><a href="/">Home</a></li><li><a href="/hotels/" class="active">Hotels</a></li><li><a href="/offers/">Offers</a></li><li><a href="/destinations/">Destinations</a></li><li><a href="/contact/">Contact</a></li><li><a href="/about/">About</a></li></ul>
+    <div class="nav-auth">
+  {% if user.is_authenticated %}
+  <a href="/dashboard/" class="btn btn-outline-teal btn-sm">Dashboard</a>
+  <a href="/auth/logout/" class="btn btn-teal btn-sm">Logout</a>
+  {% else %}
+  <a href="/auth/signup/" class="btn btn-outline-teal btn-sm">Sign Up</a>
+  <a href="/auth/login/" class="btn btn-teal btn-sm">Login</a>
+  {% endif %}
+</div>
+  </div>
+</nav>
+<main>
+    <div class="container checkout-layout">
+
+      <!-- Left: Form -->
+      <div class="checkout-main">
+
+        <!-- Step indicator -->
+        <div class="step-indicator">
+          <div class="step active"><div class="step-dot">1</div><div class="step-label">Guest Details</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="step-dot">2</div><div class="step-label">Payment</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="step-dot">3</div><div class="step-label">Confirmation</div></div>
+        </div>
+
+        <h2 class="checkout-section-title">Guest Information</h2>
+
+        <form id="guest-form" action="/checkout/payment/" method="get" novalidate>
+          <!-- Primary Guest -->
+          <div class="checkout-card">
+            <h3 class="checkout-card-title">Primary Guest</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-input" id="g-first" placeholder="John" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-input" id="g-last" placeholder="Doe" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-input" id="g-email" placeholder="john@example.com" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-input" id="g-phone" placeholder="+1 555 000 0000">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nationality</label>
+              <select class="form-input" id="g-nationality">
+                <option value="">Select country</option>
+                <option>Turkey</option>
+                <option>United States</option>
+                <option>United Kingdom</option>
+                <option>Germany</option>
+                <option>France</option>
+                <option>UAE</option>
+                <option>Saudi Arabia</option>
+                <option>Russia</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Special Requests -->
+          <div class="checkout-card">
+            <h3 class="checkout-card-title">Special Requests</h3>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Requests are subject to availability and not guaranteed.</p>
+            <div class="special-requests-grid">
+              <label class="form-check"><input type="checkbox" name="requests" value="early-checkin"> Early check-in</label>
+              <label class="form-check"><input type="checkbox" name="requests" value="late-checkout"> Late check-out</label>
+              <label class="form-check"><input type="checkbox" name="requests" value="high-floor"> High floor room</label>
+              <label class="form-check"><input type="checkbox" name="requests" value="quiet-room"> Quiet room</label>
+              <label class="form-check"><input type="checkbox" name="requests" value="twin-beds"> Twin beds</label>
+              <label class="form-check"><input type="checkbox" name="requests" value="airport-transfer"> Airport transfer</label>
+            </div>
+            <div class="form-group" style="margin-top:16px;">
+              <label class="form-label">Additional Notes</label>
+              <textarea class="form-input" id="g-notes" rows="3" placeholder="Any other requests or special occasions?" style="resize:vertical;"></textarea>
+            </div>
+          </div>
+
+          <!-- Loyalty -->
+          <div class="checkout-card">
+            <h3 class="checkout-card-title">Loyalty & Rewards</h3>
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+              <div>
+                <div style="font-size:14px;color:var(--muted);">Your points balance</div>
+                <div style="font-size:22px;font-weight:800;color:var(--teal);" id="g-points-balance">2,450 pts</div>
+              </div>
+              <label class="form-check" style="font-weight:600;">
+                <input type="checkbox" id="use-points"> Use points for this booking
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-teal btn-full btn-lg" style="margin-top:8px;" id="guest-next-btn">
+            Continue to Payment →
+          </button>
+        </form>
+      </div>
+
+      <!-- Right: Booking Summary -->
+      <div class="checkout-sidebar">
+        <div class="booking-summary-card" id="booking-summary">
+          <h3 class="checkout-card-title">Booking Summary</h3>
+          <div class="bs-hotel-row">
+            <div class="bs-hotel-img img-ph" id="bs-img" style="background-image:url(https://images.unsplash.com/photo-1566073771259-6a8506099945?w=200&q=80);background-size:cover;"></div>
+            <div>
+              <div class="bs-hotel-name" id="bs-hotel-name">Azure Coast Resort &amp; Spa</div>
+              <div class="bs-hotel-loc" id="bs-hotel-loc">Antalya</div>
+              <div class="bs-rating"><span class="stars">★★★★★</span> <span id="bs-rating">4.8</span></div>
+            </div>
+          </div>
+          <div class="bs-divider"></div>
+          <div class="bs-row"><span>Check-in</span><span id="bs-checkin">15 May 2026</span></div>
+          <div class="bs-row"><span>Check-out</span><span id="bs-checkout">20 May 2026</span></div>
+          <div class="bs-row"><span>Guests</span><span id="bs-guests">2 Adults</span></div>
+          <div class="bs-row"><span>Room</span><span id="bs-room">Deluxe Sea View</span></div>
+          <div class="bs-divider"></div>
+          <div class="bs-row"><span id="bs-nights-label">Room cost</span><span id="bs-room-total">$960</span></div>
+          <div class="bs-row"><span>Service fee (8%)</span><span id="bs-service">$77</span></div>
+          <div class="bs-row"><span>Taxes (12%)</span><span id="bs-taxes">$115</span></div>
+          <div class="bs-divider"></div>
+          <div class="bs-row bs-total"><span>Total</span><span id="bs-total">$1,152</span></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:12px;text-align:center;">✅ Free cancellation · No hidden fees</div>
+        </div>
+      </div>
+
+    </div>
+  </main><footer class="footer">
+  <div class="container"><div class="footer-bottom"><div class="container">© 2026 LuxeStay</div></div></div>
+</footer>
+</body>
+</html>

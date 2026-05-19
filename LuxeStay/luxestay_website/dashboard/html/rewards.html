@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rewards</title>
+  <link rel="stylesheet" href="{% static 'shared/css/globals.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/styleguide.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/components.css' %}" />
+  <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}" />
+</head>
+<body>
+<nav class="navbar">
+  <div class="container navbar-inner">
+    <a href="/" class="nav-logo">LuxeStay</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Menu"><span></span><span></span><span></span></label>
+    <ul class="nav-links"><li><a href="/">Home</a></li><li><a href="/hotels/">Hotels</a></li><li><a href="/offers/">Offers</a></li><li><a href="/destinations/">Destinations</a></li><li><a href="/contact/">Contact</a></li><li><a href="/about/">About</a></li></ul>
+    <div class="nav-auth">
+  {% if user.is_authenticated %}
+  <a href="/dashboard/" class="btn btn-outline-teal btn-sm">Dashboard</a>
+  <a href="/auth/logout/" class="btn btn-teal btn-sm">Logout</a>
+  {% else %}
+  <a href="/auth/signup/" class="btn btn-outline-teal btn-sm">Sign Up</a>
+  <a href="/auth/login/" class="btn btn-teal btn-sm">Login</a>
+  {% endif %}
+</div>
+  </div>
+</nav>
+<div class="dashboard-layout"><aside class="dashboard-sidebar">
+  <div class="sidebar-user">
+  <div class="avatar avatar-lg">{{ account_initials }}</div>
+  <div class="sidebar-user-name">{{ account_name }}</div>
+  <div class="sidebar-user-email">{{ user.email }}</div>
+  <span class="tier-badge tier-gold">Gold Member</span>
+</div>
+  <nav><ul class="sidebar-nav"><li><a href="/dashboard/" class="sidebar-nav-link">Overview</a></li><li><a href="/dashboard/bookings/" class="sidebar-nav-link">My Bookings</a></li><li><a href="/dashboard/saved/" class="sidebar-nav-link">Saved Hotels</a></li><li><a href="/dashboard/profile/" class="sidebar-nav-link">Profile</a></li><li><a href="/dashboard/notifications/" class="sidebar-nav-link">Notifications</a></li><li><a href="/dashboard/payment-methods/" class="sidebar-nav-link">Payment Methods</a></li><li><a href="/dashboard/reviews/" class="sidebar-nav-link">My Reviews</a></li><li><a href="/dashboard/rewards/" class="sidebar-nav-link active">Rewards</a></li></ul></nav>
+  <a href="/auth/logout/" class="sidebar-signout">Sign Out</a>
+</aside>
+<div class="dashboard-main"><div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title">LuxeStay Rewards</h1>
+          <p class="dashboard-subtitle">Earn points on every booking and unlock exclusive benefits.</p>
+        </div>
+      </div>
+
+      <!-- Points balance card -->
+      <div class="points-balance-card">
+        <div class="points-balance-left">
+          <div style="font-size:14px;opacity:0.8;margin-bottom:4px;">Your Points Balance</div>
+          <div class="points-balance-num" id="r-points">—</div>
+          <div style="font-size:13px;opacity:0.75;margin-top:4px;">≈ <span id="r-points-value">—</span> in travel credit</div>
+        </div>
+        <div class="points-balance-right">
+          <div style="font-size:13px;opacity:0.8;margin-bottom:6px;">Current Tier</div>
+          <div class="tier-badge-large" id="r-tier-badge">—</div>
+          <div style="font-size:12px;opacity:0.7;margin-top:8px;" id="r-next-tier-label"></div>
+        </div>
+      </div>
+
+      <!-- Tier progress -->
+      <div class="profile-section" style="margin-top:24px;">
+        <h3 style="margin-bottom:20px;">Tier Progress</h3>
+        <div class="tier-progress-bar-wrap">
+          <div class="tier-progress-bar-track">
+            <div class="tier-progress-bar-fill" id="r-progress-bar" style="width:0%"></div>
+          </div>
+          <div class="tier-progress-labels">
+            <span id="r-progress-start">0</span>
+            <span id="r-progress-label">0 / 0 pts to next tier</span>
+            <span id="r-progress-end">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tier cards -->
+      <div class="tier-cards-grid">
+        <div class="tier-card" id="tier-bronze">
+          <div class="tier-card-icon">🥉</div>
+          <div class="tier-card-name">Bronze</div>
+          <div class="tier-card-range">0 – 4,999 pts</div>
+          <ul class="tier-card-perks">
+            <li>5% discount on bookings</li>
+            <li>Priority support</li>
+            <li>Early access to deals</li>
+          </ul>
+        </div>
+        <div class="tier-card" id="tier-silver">
+          <div class="tier-card-icon">🥈</div>
+          <div class="tier-card-name">Silver</div>
+          <div class="tier-card-range">5,000 – 14,999 pts</div>
+          <ul class="tier-card-perks">
+            <li>10% discount on bookings</li>
+            <li>Free room upgrades</li>
+            <li>Exclusive flash sale access</li>
+          </ul>
+        </div>
+        <div class="tier-card" id="tier-gold">
+          <div class="tier-card-icon">🥇</div>
+          <div class="tier-card-name">Gold</div>
+          <div class="tier-card-range">15,000 – 49,999 pts</div>
+          <ul class="tier-card-perks">
+            <li>15% discount on bookings</li>
+            <li>Guaranteed early check-in</li>
+            <li>Complimentary breakfast</li>
+          </ul>
+        </div>
+        <div class="tier-card" id="tier-platinum">
+          <div class="tier-card-icon">💎</div>
+          <div class="tier-card-name">Platinum</div>
+          <div class="tier-card-range">50,000+ pts</div>
+          <ul class="tier-card-perks">
+            <li>20% discount on bookings</li>
+            <li>Dedicated concierge</li>
+            <li>Free airport transfers</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Redeem points -->
+      <div class="profile-section" style="margin-top:32px;">
+        <h3 style="margin-bottom:8px;">Redeem Points</h3>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">100 points = $1 travel credit. Minimum redemption: 1,000 points.</p>
+        <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+          <div class="form-group" style="flex:1;min-width:160px;margin-bottom:0;">
+            <label class="form-label">Points to Redeem</label>
+            <input type="number" class="form-input" id="redeem-amount" placeholder="e.g. 5000" min="1000" step="100">
+          </div>
+          <div style="padding-bottom:2px;">
+            <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">= <strong id="redeem-value">$0</strong> credit</div>
+            <button class="btn btn-teal" id="redeem-btn">Redeem</button>
+          </div>
+        </div>
+        <div id="redeem-msg" style="margin-top:12px;font-size:14px;display:none;"></div>
+      </div>
+
+      <!-- Points history -->
+      <div class="profile-section" style="margin-top:32px;">
+        <h3 style="margin-bottom:20px;">Points History</h3>
+        <div class="transaction-table-wrap">
+          <table class="transaction-table">
+            <thead><tr><th>Date</th><th>Activity</th><th>Points</th><th>Balance</th></tr></thead>
+            <tbody id="points-history-tbody">
+              <tr><td colspan="4" style="color:var(--muted);text-align:center;padding:24px;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div></div></div><footer class="footer">
+  <div class="container"><div class="footer-bottom"><div class="container">© 2026 LuxeStay</div></div></div>
+</footer>
+</body>
+</html>
