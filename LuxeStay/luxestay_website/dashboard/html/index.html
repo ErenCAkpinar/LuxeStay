@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="{% static 'shared/css/globals.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/styleguide.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/components.css' %}" />
+  <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}" />
+</head>
+<body>
+<nav class="navbar">
+  <div class="container navbar-inner">
+    <a href="/" class="nav-logo">LuxeStay</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Menu"><span></span><span></span><span></span></label>
+    <ul class="nav-links"><li><a href="/">Home</a></li><li><a href="/hotels/">Hotels</a></li><li><a href="/offers/">Offers</a></li><li><a href="/destinations/">Destinations</a></li><li><a href="/contact/">Contact</a></li><li><a href="/about/">About</a></li></ul>
+    <div class="nav-auth">
+  {% if user.is_authenticated %}
+  <a href="/dashboard/" class="btn btn-outline-teal btn-sm">Dashboard</a>
+  <a href="/auth/logout/" class="btn btn-teal btn-sm">Logout</a>
+  {% else %}
+  <a href="/auth/signup/" class="btn btn-outline-teal btn-sm">Sign Up</a>
+  <a href="/auth/login/" class="btn btn-teal btn-sm">Login</a>
+  {% endif %}
+</div>
+  </div>
+</nav>
+<div class="dashboard-layout"><aside class="dashboard-sidebar">
+  <div class="sidebar-user">
+  <div class="avatar avatar-lg">{{ account_initials }}</div>
+  <div class="sidebar-user-name">{{ account_name }}</div>
+  <div class="sidebar-user-email">{{ user.email }}</div>
+  <span class="tier-badge tier-gold">{{ reward_tier }} Member</span>
+</div>
+  <nav><ul class="sidebar-nav"><li><a href="/dashboard/" class="sidebar-nav-link active">Overview</a></li><li><a href="/dashboard/bookings/" class="sidebar-nav-link">My Bookings</a></li><li><a href="/dashboard/saved/" class="sidebar-nav-link">Saved Hotels</a></li><li><a href="/dashboard/profile/" class="sidebar-nav-link">Profile</a></li><li><a href="/dashboard/notifications/" class="sidebar-nav-link">Notifications</a></li><li><a href="/dashboard/payment-methods/" class="sidebar-nav-link">Payment Methods</a></li><li><a href="/dashboard/reviews/" class="sidebar-nav-link">My Reviews</a></li><li><a href="/dashboard/rewards/" class="sidebar-nav-link">Rewards</a></li></ul></nav>
+  <a href="/auth/logout/" class="sidebar-signout">Sign Out</a>
+</aside>
+<div class="dashboard-main"><div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title">Welcome back, <span id="dash-user-name">{{ account_first_name }}</span> 👋</h1>
+          <p class="dashboard-subtitle">Here's what's happening with your account.</p>
+        </div>
+        <a href="/hotels/" class="btn btn-teal">Book a Hotel</a>
+      </div>
+
+      <!-- Stats -->
+      <div class="dash-stat-grid">
+        <div class="dash-stat-card">
+          <div class="dash-stat-icon">🏨</div>
+          <div class="dash-stat-num" id="stat-bookings">{{ bookings_count }}</div>
+          <div class="dash-stat-label">Total Bookings</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-icon">🏆</div>
+          <div class="dash-stat-num" id="stat-points">{{ reward_points }}</div>
+          <div class="dash-stat-label">Reward Points</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-icon">♥</div>
+          <div class="dash-stat-num" id="stat-saved">{{ saved_count }}</div>
+          <div class="dash-stat-label">Saved Hotels</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-icon">★</div>
+          <div class="dash-stat-num" id="stat-tier">{{ reward_tier }}</div>
+          <div class="dash-stat-label">Member Tier</div>
+        </div>
+      </div>
+
+      <section class="dash-section">
+        <div class="dash-section-header">
+          <h2>Upcoming Stays</h2>
+          <a href="/dashboard/bookings/" class="dash-view-all">View all →</a>
+        </div>
+        <div id="upcoming-bookings">
+          {% for booking in upcoming_bookings %}
+          <article class="booking-card">
+            <div class="booking-card-img"><img src="{{ booking.hotel.image_url }}" alt="{{ booking.hotel.name }}" /></div>
+            <div class="booking-card-body">
+              <div class="booking-card-top">
+                <div><div class="booking-card-hotel">{{ booking.hotel.name }}</div><div class="booking-card-loc">{{ booking.hotel.location }}</div></div>
+                <span class="status-badge {{ booking.status_css }}">{{ booking.get_status_display|upper }}</span>
+              </div>
+              <div class="booking-card-meta"><span>{{ booking.check_in|date:"d M Y" }} - {{ booking.check_out|date:"d M Y" }}</span><span>{{ booking.room_name }}</span></div>
+              <div class="booking-card-footer"><strong>${{ booking.total_amount }}</strong> · {{ booking.display_reference }}</div>
+            </div>
+          </article>
+          {% empty %}
+          <p style="color:var(--muted);font-size:14px;">No upcoming stays yet.</p>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="dash-section">
+        <div class="dash-section-header">
+          <h2>Saved Hotels</h2>
+          <a href="/dashboard/saved/" class="dash-view-all">View all →</a>
+        </div>
+        <div class="saved-grid" id="dash-saved-grid">
+          {% for saved in saved_hotels %}
+          <article class="booking-card">
+            <div class="booking-card-img"><img src="{{ saved.hotel.image_url }}" alt="{{ saved.hotel.name }}" /></div>
+            <div class="booking-card-body">
+              <div class="booking-card-top"><div><div class="booking-card-hotel">{{ saved.hotel.name }}</div><div class="booking-card-loc">{{ saved.hotel.location }}</div></div></div>
+              <div class="booking-card-meta"><span>${{ saved.hotel.current_price }} / night</span><span>{{ saved.hotel.rooms_left }} rooms left</span></div>
+              <div class="booking-card-footer"><a href="/hotels/detail/?id={{ saved.hotel.code }}" class="btn btn-teal btn-sm">View Deal</a></div>
+            </div>
+          </article>
+          {% empty %}
+          <p style="color:var(--muted);font-size:14px;">Save hotels from the search results to see them here.</p>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="dash-section">
+        <div class="dash-section-header">
+          <h2>Recent Notifications</h2>
+          <a href="/dashboard/notifications/" class="dash-view-all">View all →</a>
+        </div>
+        <div id="dash-notifications">
+          {% for notification in notifications %}
+          <article class="booking-card">
+            <div class="booking-card-body">
+              <div class="booking-card-top">
+                <div><div class="booking-card-hotel">{{ notification.title }}</div><div class="booking-card-loc">{{ notification.body }}</div></div>
+                <span class="status-badge {{ notification.css }}">NEW</span>
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </section></div></div><footer class="footer">
+  <div class="container"><div class="footer-bottom"><div class="container">© 2026 LuxeStay</div></div></div>
+</footer>
+</body>
+</html>

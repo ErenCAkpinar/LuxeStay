@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Saved</title>
+  <link rel="stylesheet" href="{% static 'shared/css/globals.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/styleguide.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/components.css' %}" />
+  <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}" />
+</head>
+<body>
+<nav class="navbar">
+  <div class="container navbar-inner">
+    <a href="/" class="nav-logo">LuxeStay</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Menu"><span></span><span></span><span></span></label>
+    <ul class="nav-links"><li><a href="/">Home</a></li><li><a href="/hotels/">Hotels</a></li><li><a href="/offers/">Offers</a></li><li><a href="/destinations/">Destinations</a></li><li><a href="/contact/">Contact</a></li><li><a href="/about/">About</a></li></ul>
+    <div class="nav-auth">
+  {% if user.is_authenticated %}
+  <a href="/dashboard/" class="btn btn-outline-teal btn-sm">Dashboard</a>
+  <a href="/auth/logout/" class="btn btn-teal btn-sm">Logout</a>
+  {% else %}
+  <a href="/auth/signup/" class="btn btn-outline-teal btn-sm">Sign Up</a>
+  <a href="/auth/login/" class="btn btn-teal btn-sm">Login</a>
+  {% endif %}
+</div>
+  </div>
+</nav>
+<div class="dashboard-layout"><aside class="dashboard-sidebar">
+  <div class="sidebar-user">
+  <div class="avatar avatar-lg">{{ account_initials }}</div>
+  <div class="sidebar-user-name">{{ account_name }}</div>
+  <div class="sidebar-user-email">{{ user.email }}</div>
+  <span class="tier-badge tier-gold">{{ reward_tier }} Member</span>
+</div>
+  <nav><ul class="sidebar-nav"><li><a href="/dashboard/" class="sidebar-nav-link">Overview</a></li><li><a href="/dashboard/bookings/" class="sidebar-nav-link">My Bookings</a></li><li><a href="/dashboard/saved/" class="sidebar-nav-link active">Saved Hotels</a></li><li><a href="/dashboard/profile/" class="sidebar-nav-link">Profile</a></li><li><a href="/dashboard/notifications/" class="sidebar-nav-link">Notifications</a></li><li><a href="/dashboard/payment-methods/" class="sidebar-nav-link">Payment Methods</a></li><li><a href="/dashboard/reviews/" class="sidebar-nav-link">My Reviews</a></li><li><a href="/dashboard/rewards/" class="sidebar-nav-link">Rewards</a></li></ul></nav>
+  <a href="/auth/logout/" class="sidebar-signout">Sign Out</a>
+</aside>
+<div class="dashboard-main"><div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title">Saved Hotels</h1>
+          <p class="dashboard-subtitle">Your wishlist of handpicked properties.</p>
+        </div>
+        <a href="/hotels/" class="btn btn-teal">Browse Hotels</a>
+      </div>
+      <div class="saved-grid" id="saved-grid">
+        {% for saved in saved_hotels %}
+        <article class="booking-card">
+          <div class="booking-card-img"><img src="{{ saved.hotel.image_url }}" alt="{{ saved.hotel.name }}" /></div>
+          <div class="booking-card-body">
+            <div class="booking-card-top">
+              <div><div class="booking-card-hotel">{{ saved.hotel.name }}</div><div class="booking-card-loc">{{ saved.hotel.location }}</div></div>
+              <span class="status-badge status-upcoming">SAVED</span>
+            </div>
+            <div class="booking-card-meta"><span>${{ saved.hotel.current_price }} per night</span><span>{{ saved.hotel.rooms_left }} rooms left</span></div>
+            <div class="booking-card-footer" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <a href="/hotels/detail/?id={{ saved.hotel.code }}" class="btn btn-teal btn-sm">View Deal</a>
+              <form action="/dashboard/saved/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="remove">
+                <input type="hidden" name="hotel_code" value="{{ saved.hotel.code }}">
+                <button type="submit" class="btn btn-ghost btn-sm">Remove</button>
+              </form>
+            </div>
+          </div>
+        </article>
+        {% empty %}
+        <div class="booking-card" style="padding:28px;">
+          <div class="booking-card-body">
+            <div class="booking-card-hotel">No saved hotels yet</div>
+            <div class="booking-card-loc">Use the Save button on hotel search results to build your wishlist.</div>
+            <a href="/hotels/" class="btn btn-teal" style="margin-top:16px;">Browse Hotels</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div></div></div><footer class="footer">
+  <div class="container"><div class="footer-bottom"><div class="container">© 2026 LuxeStay</div></div></div>
+</footer>
+</body>
+</html>
