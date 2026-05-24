@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payment</title>
+  <link rel="stylesheet" href="{% static 'shared/css/globals.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/styleguide.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/components.css' %}" />
+  <link rel="stylesheet" href="{% static 'checkout/css/checkout.css' %}" />
+  <meta http-equiv="Cache-Control" content="no-store" />
+</head>
+<body>
+<nav class="navbar">
+  <div class="container navbar-inner">
+    <a href="/" class="nav-logo">LuxeStay</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Menu"><span></span><span></span><span></span></label>
+    <ul class="nav-links"><li><a href="/">Home</a></li><li><a href="/hotels/" class="active">Hotels</a></li><li><a href="/offers/">Offers</a></li><li><a href="/destinations/">Destinations</a></li><li><a href="/contact/">Contact</a></li><li><a href="/about/">About</a></li></ul>
+    <div class="nav-auth">
+  {% if user.is_authenticated %}
+  <a href="/dashboard/" class="btn btn-outline-teal btn-sm">Dashboard</a>
+  <a href="/auth/logout/" class="btn btn-teal btn-sm">Logout</a>
+  {% else %}
+  <a href="/auth/signup/" class="btn btn-outline-teal btn-sm">Sign Up</a>
+  <a href="/auth/login/" class="btn btn-teal btn-sm">Login</a>
+  {% endif %}
+</div>
+  </div>
+</nav>
+<main>
+    <div class="container checkout-layout">
+
+      <!-- Left: Payment Form -->
+      <div class="checkout-main">
+
+        <div class="step-indicator">
+          <div class="step done"><div class="step-dot">✓</div><div class="step-label">Guest Details</div></div>
+          <div class="step-line active"></div>
+          <div class="step active"><div class="step-dot">2</div><div class="step-label">Payment</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="step-dot">3</div><div class="step-label">Confirmation</div></div>
+        </div>
+
+        <h2 class="checkout-section-title">Payment Details</h2>
+
+        <!-- Payment method tabs -->
+        <div class="payment-method-tabs" id="payment-tabs">
+          <button type="button" class="payment-tab active" data-method="card">💳 Credit / Debit Card</button>
+          <button type="button" class="payment-tab" data-method="bank">🏦 Bank Transfer</button>
+          <button type="button" class="payment-tab" data-method="saved">🔖 Saved Cards</button>
+        </div>
+
+        {% if payment_error %}<div class="auth-error">{{ payment_error }}</div>{% endif %}
+        <form id="pay-form" action="/checkout/payment/" method="post" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="payment_method" id="payment-method-input" value="card">
+        <!-- Card form -->
+        <div class="checkout-card" id="panel-card">
+          <div class="form-group">
+            <label class="form-label">Name on Card</label>
+            <input type="text" class="form-input" id="pm-name" name="cardholder_name" placeholder="{{ user.first_name }} {{ user.last_name }}" autocomplete="cc-name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Card Number</label>
+            <input type="text" class="form-input" id="pm-number" name="card_number" placeholder="5100 6304 2406 0202" maxlength="23" autocomplete="cc-number" inputmode="numeric">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Expiry Date</label>
+              <input type="text" class="form-input" id="pm-expiry" name="expiry" placeholder="MM/YY" maxlength="5" autocomplete="cc-exp" inputmode="numeric">
+            </div>
+            <div class="form-group">
+              <label class="form-label">CVV</label>
+              <input type="text" class="form-input" id="pm-cvv" name="cvv" placeholder="123" maxlength="4" autocomplete="cc-csc" inputmode="numeric">
+            </div>
+          </div>
+          <label class="form-check" style="margin-top:4px;">
+            <input type="checkbox" id="pm-save-card" name="save_card"> Save this card for future bookings
+          </label>
+        </div>
+
+        <!-- Bank transfer panel -->
+        <div class="checkout-card" id="panel-bank" style="display:none;">
+          <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">Complete your booking and transfer within 24 hours to hold your reservation.</p>
+          <div class="bank-detail-row"><span>Bank</span><strong>LuxeStay Partner Bank</strong></div>
+          <div class="bank-detail-row"><span>Account Name</span><strong>LuxeStay Ltd.</strong></div>
+          <div class="bank-detail-row"><span>IBAN</span><strong>TR12 0001 0099 9999 0000 0000 00</strong></div>
+          <div class="bank-detail-row"><span>Reference</span><strong id="bank-ref">LXS-2026-84729</strong></div>
+        </div>
+
+        <!-- Saved cards panel -->
+        <div class="checkout-card" id="panel-saved" style="display:none;" data-saved-card-count="{{ saved_payment_methods|length }}">
+          <div id="saved-cards-list">
+            {% for method in saved_payment_methods %}
+            <div class="saved-card-item active">
+              <div class="saved-card-icon">💳</div>
+              <div><div class="saved-card-name">{{ method.brand }} ending in {{ method.last4 }}</div><div style="font-size:12px;color:var(--muted);">Expires {{ method.expiry_display }}</div></div>
+              <div class="saved-card-check">✓</div>
+            </div>
+            {% empty %}
+            <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">No saved cards yet. Add a card below or save one during payment.</p>
+            {% endfor %}
+          </div>
+          <a href="/dashboard/payment-methods/" class="btn btn-ghost btn-sm" style="margin-top:12px;">Manage saved cards</a>
+        </div>
+
+        <!-- Agreements -->
+        <div class="checkout-card">
+          <h3 class="checkout-card-title">Terms & Policies</h3>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <label class="form-check">
+              <input type="checkbox" id="agree-terms" name="agree_terms">
+              I agree to LuxeStay's <a href="#" style="color:var(--teal);">Terms and Conditions</a> and <a href="#" style="color:var(--teal);">Privacy Policy</a>
+            </label>
+            <label class="form-check">
+              <input type="checkbox" id="agree-cancel" name="agree_cancel">
+              I understand the <a href="#" style="color:var(--teal);">Cancellation Policy</a> for this booking
+            </label>
+          </div>
+        </div>
+
+        <div id="pay-error" class="auth-error" style="display:none;margin-top:0;"></div>
+
+        <button type="submit" class="btn btn-coral btn-full btn-lg" id="pay-btn" style="margin-top:8px;">
+          🔒 Pay Now — <span id="pay-total">${{ totals.total }}</span>
+        </button>
+        <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:12px;">🔒 Payments are secured with 256-bit SSL encryption</p>
+        </form>
+
+        <script>
+          const cardNumberInput = document.getElementById('pm-number');
+          const expiryInput = document.getElementById('pm-expiry');
+          const cvvInput = document.getElementById('pm-cvv');
+
+          function digitsOnly(value) {
+            return value.replace(/\D/g, '');
+          }
+
+          function formatCardNumber(value) {
+            return digitsOnly(value).slice(0, 19).replace(/(.{4})/g, '$1 ').trim();
+          }
+
+          function formatExpiry(value) {
+            const digits = digitsOnly(value).slice(0, 4);
+            if (digits.length <= 2) return digits;
+            return digits.slice(0, 2) + '/' + digits.slice(2);
+          }
+
+          function expiryIsValid(value) {
+            if (!/^\d{2}\/\d{2}$/.test(value)) return false;
+            const month = Number(value.slice(0, 2));
+            const year = 2000 + Number(value.slice(3, 5));
+            const now = new Date();
+            if (month < 1 || month > 12) return false;
+            if (year < now.getFullYear()) return false;
+            return year !== now.getFullYear() || month >= now.getMonth() + 1;
+          }
+
+          cardNumberInput.addEventListener('input', function() {
+            this.value = formatCardNumber(this.value);
+          });
+
+          expiryInput.addEventListener('input', function() {
+            this.value = formatExpiry(this.value);
+          });
+
+          cvvInput.addEventListener('input', function() {
+            this.value = digitsOnly(this.value).slice(0, 4);
+          });
+
+          document.getElementById('pay-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const method = document.querySelector('.payment-tab.active')?.dataset.method || 'card';
+            const error = document.getElementById('pay-error');
+            error.style.display = 'none';
+
+            if (!document.getElementById('agree-terms').checked || !document.getElementById('agree-cancel').checked) {
+              error.textContent = 'Please accept the Terms & Policies to continue.';
+              error.style.display = 'block';
+              return;
+            }
+
+            if (method === 'card') {
+              const name = document.getElementById('pm-name').value.trim();
+              const number = digitsOnly(document.getElementById('pm-number').value);
+              const expiry = document.getElementById('pm-expiry').value.trim();
+              const cvv = digitsOnly(document.getElementById('pm-cvv').value);
+              if (!name) {
+                error.textContent = 'Please enter the name on the card.';
+                error.style.display = 'block';
+                return;
+              }
+              if (number.length < 13 || number.length > 19) {
+                error.textContent = 'Card number must be 13 to 19 digits.';
+                error.style.display = 'block';
+                return;
+              }
+              if (!expiryIsValid(expiry)) {
+                error.textContent = 'Expiry date must be a valid future date in MM/YY format.';
+                error.style.display = 'block';
+                return;
+              }
+              if (cvv.length < 3 || cvv.length > 4) {
+                error.textContent = 'CVV must be 3 or 4 digits.';
+                error.style.display = 'block';
+                return;
+              }
+            }
+
+            if (method === 'saved' && Number(document.getElementById('panel-saved').dataset.savedCardCount || 0) < 1) {
+              error.textContent = 'Please add a saved card before using this option.';
+              error.style.display = 'block';
+              return;
+            }
+
+            this.submit();
+          });
+
+          document.querySelectorAll('.payment-tab').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+              document.querySelectorAll('.payment-tab').forEach(function(item) { item.classList.remove('active'); });
+              tab.classList.add('active');
+              document.getElementById('payment-method-input').value = tab.dataset.method || 'card';
+              document.getElementById('panel-card').style.display = tab.dataset.method === 'card' ? 'block' : 'none';
+              document.getElementById('panel-bank').style.display = tab.dataset.method === 'bank' ? 'block' : 'none';
+              document.getElementById('panel-saved').style.display = tab.dataset.method === 'saved' ? 'block' : 'none';
+            });
+          });
+        </script>
+      </div>
+
+      <!-- Right: Summary -->
+      <div class="checkout-sidebar">
+        <div class="booking-summary-card" id="booking-summary">
+          <h3 class="checkout-card-title">Booking Summary</h3>
+          <div class="bs-hotel-row">
+            <div class="bs-hotel-img img-ph" id="bs-img" style="background-image:url({{ hotel.image_url }});background-size:cover;"></div>
+            <div>
+              <div class="bs-hotel-name" id="bs-hotel-name">{{ hotel.name }}</div>
+              <div class="bs-hotel-loc" id="bs-hotel-loc">{{ hotel.location }}</div>
+            </div>
+          </div>
+          <div class="bs-divider"></div>
+          <div class="bs-row"><span>Check-in</span><span id="bs-checkin">{{ check_in|date:"d M Y" }}</span></div>
+          <div class="bs-row"><span>Check-out</span><span id="bs-checkout">{{ check_out|date:"d M Y" }}</span></div>
+          <div class="bs-row"><span>Guests</span><span id="bs-guests">{{ guests }} Adults</span></div>
+          <div class="bs-row"><span>Room</span><span id="bs-room">{{ room_name }}</span></div>
+          <div class="bs-divider"></div>
+          <div class="bs-row"><span id="bs-nights-label">{{ totals.nights }} night room cost</span><span id="bs-room-total">${{ totals.room_total }}</span></div>
+          <div class="bs-row"><span>Service fee</span><span id="bs-service">${{ totals.service_fee }}</span></div>
+          <div class="bs-row"><span>Taxes</span><span id="bs-taxes">${{ totals.taxes }}</span></div>
+          <div class="bs-divider"></div>
+          <div class="bs-row bs-total"><span>Total</span><span id="bs-total">${{ totals.total }}</span></div>
+        </div>
+      </div>
+
+    </div>
+  </main><footer class="footer">
+  <div class="container"><div class="footer-bottom"><div class="container">© 2026 LuxeStay</div></div></div>
+</footer>
+</body>
+</html>
