@@ -1,0 +1,324 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LuxeStay - {{ hotel.name }}</title>
+  <link rel="stylesheet" href="{% static 'shared/css/globals.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/styleguide.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/components.css' %}" />
+  <link rel="stylesheet" href="{% static 'hotels/css/hotels.css' %}" />
+</head>
+<body>
+<nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="nav-logo">LuxeStay</a>
+
+      <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+      <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </label>
+
+      <ul class="nav-links">
+        <li><a href="/" >Home</a></li>
+        <li><a href="/hotels/" class="active">Hotels</a></li>
+        <li><a href="/offers/">Offers</a></li>
+        <li><a href="/destinations/">Destinations</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/about/">About</a></li>
+      </ul>
+
+      <div class="nav-auth">
+  {% if user.is_authenticated %}
+  <a href="/dashboard/" class="btn btn-outline-teal btn-sm">Dashboard</a>
+  <a href="/auth/logout/" class="btn btn-teal btn-sm">Logout</a>
+  {% else %}
+  <a href="/auth/signup/" class="btn btn-outline-teal btn-sm">Sign Up</a>
+  <a href="/auth/login/" class="btn btn-teal btn-sm">Login</a>
+  {% endif %}
+</div>
+    </div>
+  </nav>
+
+<main>
+    <div class="container">
+      <nav class="breadcrumb" id="breadcrumb">
+        <a href="/">Home</a> / <a href="/hotels/">Hotels</a> / <span id="hotel-name-bc">{{ hotel.name }}</span>
+      </nav>
+
+      <!-- Gallery -->
+      <div class="gallery" id="hotel-gallery">
+        <div class="gallery-main">
+          <img src="{{ hotel.image_url }}" alt="{{ hotel.name }}" class="gallery-img img-ph" id="gallery-main-img" style="width:100%;height:100%;">
+        </div>
+        <div class="gallery-thumb img-ph"></div>
+        <div class="gallery-thumb img-ph"></div>
+        <button class="gallery-view-all" id="gallery-view-all">View All Photos</button>
+      </div>
+
+      <!-- Hotel Header -->
+      <div class="hotel-header">
+        <div class="hotel-header-left">
+          <div id="hotel-badges" style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;"></div>
+          <h1 class="hotel-title" id="hotel-title">{{ hotel.name }}</h1>
+          <div class="hotel-location" id="hotel-location">{{ hotel.location }}</div>
+          <div class="hotel-rating-row">
+            <span class="stars">★★★★★</span>
+            <span class="rating-num" id="hotel-rating">{{ hotel.rating }}</span>
+            <span class="rating-count" id="hotel-review-count">({{ hotel.review_count }} reviews)</span>
+          </div>
+          {% if user.is_authenticated %}
+          <form action="/dashboard/saved/toggle/" method="post" style="margin-top:16px;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save">
+            <input type="hidden" name="hotel_code" value="{{ hotel.code }}">
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button type="submit" class="btn btn-outline-teal"{% if hotel_is_saved %} disabled{% endif %}>{% if hotel_is_saved %}Saved{% else %}Save Hotel{% endif %}</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Tabs + Booking Widget Layout -->
+      <div class="detail-layout">
+        <div class="detail-content">
+
+          <!-- Tabs -->
+          <div class="tabs-bar">
+            <button class="tab-btn active" data-tab="overview">Overview</button>
+            <button class="tab-btn" data-tab="rooms">Rooms</button>
+            <button class="tab-btn" data-tab="amenities">Amenities</button>
+            <button class="tab-btn" data-tab="reviews">Reviews</button>
+            <button class="tab-btn" data-tab="location">Location</button>
+          </div>
+
+          <!-- Overview -->
+          <div class="tab-panel active" id="tab-overview" style="display:block;padding-top:32px;">
+            <p class="hotel-desc" id="hotel-desc">Book {{ hotel.name }} in {{ hotel.location }} with LuxeStay.</p>
+            <div class="hotel-about-grid" id="hotel-about-grid">
+              <div class="hotel-about-item"><span class="hotel-about-label">Built</span><span class="hotel-about-value" id="ab-year">2018</span></div>
+              <div class="hotel-about-item"><span class="hotel-about-label">Stars</span><span class="hotel-about-value" id="ab-stars">5 Stars</span></div>
+              <div class="hotel-about-item"><span class="hotel-about-label">Beach</span><span class="hotel-about-value" id="ab-beach">Private Beach</span></div>
+              <div class="hotel-about-item"><span class="hotel-about-label">Check-in</span><span class="hotel-about-value" id="ab-checkin">3:00 PM</span></div>
+            </div>
+            <h3 style="margin-bottom:20px;font-size:18px;font-weight:700;">About the Property</h3>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;" id="hotel-option-tags"></div>
+          </div>
+
+          <!-- Rooms -->
+          <div class="tab-panel active" style="display:block;padding-top:32px;" id="tab-rooms" style="padding-top:32px;">
+            <h3 style="margin-bottom:20px;font-size:18px;font-weight:700;">Choose Your Room</h3>
+            <div class="rooms-list" id="rooms-list">
+<div class="room-card">
+  <div class="room-card-img img-ph" style="background-image:url(https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80);background-size:cover;"></div>
+  <div class="room-card-body">
+    <div class="room-card-name">Deluxe Sea View Room</div>
+    <div class="room-card-beds">1 King Bed · Up to {{ hotel.max_guests }} Guests</div>
+    <div class="room-card-features"><span>Sea View</span><span>Balcony</span><span>Free WiFi</span></div>
+  </div>
+  <div class="room-card-price"><div><div class="room-price">${{ hotel.current_price }}</div><div class="room-price-unit">/ night</div></div><a href="/checkout/guest-details/?hotel={{ hotel.code }}{% if booking_search.checkIn %}&checkIn={{ booking_search.checkIn }}{% endif %}{% if booking_search.checkOut %}&checkOut={{ booking_search.checkOut }}{% endif %}{% if booking_search.guests %}&guests={{ booking_search.guests }}{% endif %}&room_name=Deluxe%20Sea%20View%20Room" class="btn btn-teal" data-booking-link data-room-name="Deluxe Sea View Room">Select Room</a></div>
+</div>
+<div class="room-card">
+  <div class="room-card-img img-ph" style="background-image:url(https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400&q=80);background-size:cover;"></div>
+  <div class="room-card-body">
+    <div class="room-card-name">Junior Suite</div>
+    <div class="room-card-beds">1 King Bed · 3 Guests</div>
+    <div class="room-card-features"><span>Jacuzzi</span><span>Living Area</span></div>
+  </div>
+  <div class="room-card-price"><div><div class="room-price">${{ hotel.original_price }}</div><div class="room-price-unit">/ night</div></div><a href="/checkout/guest-details/?hotel={{ hotel.code }}{% if booking_search.checkIn %}&checkIn={{ booking_search.checkIn }}{% endif %}{% if booking_search.checkOut %}&checkOut={{ booking_search.checkOut }}{% endif %}{% if booking_search.guests %}&guests={{ booking_search.guests }}{% endif %}&room_name=Junior%20Suite" class="btn btn-teal" data-booking-link data-room-name="Junior Suite">Select Room</a></div>
+</div>
+</div>
+          </div>
+
+          <!-- Amenities -->
+          <div class="tab-panel active" style="display:block;padding-top:32px;" id="tab-amenities" style="padding-top:32px;">
+            <h3 style="margin-bottom:20px;font-size:18px;font-weight:700;">What's Included</h3>
+            <div class="amenities-grid" id="amenities-grid">
+              <div class="amenity-item"><div class="amenity-icon">🏊</div><span>Outdoor Pool</span></div>
+              <div class="amenity-item"><div class="amenity-icon">🏖️</div><span>Private Beach</span></div>
+              <div class="amenity-item"><div class="amenity-icon">💆</div><span>Spa & Wellness</span></div>
+              <div class="amenity-item"><div class="amenity-icon">📶</div><span>Free WiFi</span></div>
+              <div class="amenity-item"><div class="amenity-icon">🍽️</div><span>Restaurant</span></div>
+              <div class="amenity-item"><div class="amenity-icon">🍸</div><span>Bar / Lounge</span></div>
+              <div class="amenity-item"><div class="amenity-icon">🏋️</div><span>Fitness Center</span></div>
+              <div class="amenity-item"><div class="amenity-icon">🛎️</div><span>Room Service</span></div>
+              <div class="amenity-item"><div class="amenity-icon">🅿️</div><span>Free Parking</span></div>
+              <div class="amenity-item"><div class="amenity-icon">✈️</div><span>Airport Shuttle</span></div>
+              <div class="amenity-item"><div class="amenity-icon">🧸</div><span>Kids Club</span></div>
+              <div class="amenity-item"><div class="amenity-icon">💼</div><span>Business Center</span></div>
+            </div>
+          </div>
+
+          <!-- Reviews -->
+          <div class="tab-panel active" style="display:block;padding-top:32px;" id="tab-reviews" style="padding-top:32px;">
+            <h3 style="margin-bottom:20px;font-size:18px;font-weight:700;">Guest Reviews</h3>
+            <div class="reviews-summary" id="reviews-summary">
+              <div>
+                <div class="reviews-score-big" id="review-score">4.8</div>
+                <div style="font-size:13px;color:var(--muted);">out of 5</div>
+              </div>
+              <div class="reviews-breakdown">
+                <div class="rating-bar-row"><span>Cleanliness</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:96%"></div></div><span>4.8</span></div>
+                <div class="rating-bar-row"><span>Location</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:88%"></div></div><span>4.4</span></div>
+                <div class="rating-bar-row"><span>Value</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:94%"></div></div><span>4.7</span></div>
+                <div class="rating-bar-row"><span>Service</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:96%"></div></div><span>4.8</span></div>
+              </div>
+            </div>
+            <div class="review-list" id="review-list">
+              <div class="review-item">
+                <div class="review-item-header"><div class="avatar">SJ</div><div><div class="review-author-name">Sarah Johnson <span class="stars" style="font-size:11px;">★★★★★</span></div><div class="review-author-date">January 2026</div></div></div>
+                <p class="review-item-text">Amazing experience! The beachfront location is unbeatable and the staff go above and beyond. The spa treatments were divine.</p>
+              </div>
+              <div class="review-item">
+                <div class="review-item-header"><div class="avatar">MC</div><div><div class="review-author-name">Michael Chen <span class="stars" style="font-size:11px;">★★★★★</span></div><div class="review-author-date">February 2026</div></div></div>
+                <p class="review-item-text">Stayed in the Junior Suite for our anniversary and it was pure perfection. The private beach access was outstanding.</p>
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:24px;">
+              <button class="btn btn-outline-teal" id="load-more-reviews">See All Reviews ↓</button>
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="tab-panel active" style="display:block;padding-top:32px;" id="tab-location" style="padding-top:32px;">
+            <h3 style="margin-bottom:20px;font-size:18px;font-weight:700;">Location</h3>
+            <div class="map-embed">
+              <div style="text-align:center;">
+                <div style="font-size:40px;margin-bottom:8px;">📍</div>
+                <div style="font-weight:600;" id="map-hotel-name">Hotel Location</div>
+                <div style="font-size:13px;color:var(--muted);margin-top:4px;" id="map-hotel-loc">Antalya, Turkey</div>
+                <a href="#" id="map-open-link" class="map-open-link" style="display:inline-flex;margin-top:16px;gap:4px;">Open in Google Maps ↗</a>
+              </div>
+            </div>
+            <div class="map-distances">
+              <div class="map-distance-item">🏖️ <span>2 min to Beach</span></div>
+              <div class="map-distance-item">🏙️ <span>5 min to City Center</span></div>
+              <div class="map-distance-item">✈️ <span>15 min to Airport</span></div>
+              <div class="map-distance-item">🏛️ <span>10 min to Old Town</span></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Booking Widget -->
+        <div>
+          <form class="booking-widget" action="/checkout/guest-details/" method="get" data-booking-source data-deluxe-price="{{ hotel.current_price }}" data-junior-price="{{ hotel.original_price }}">
+            <input type="hidden" name="hotel" value="{{ hotel.code }}">
+            <input type="hidden" name="guests" value="{{ booking_search.guests }}">
+            <input type="hidden" name="room_name" value="{{ booking_search.room_name }}">
+            <div class="widget-price-row">
+              <span class="widget-price-old" id="w-original-price"></span>
+              <span class="widget-price" id="w-price">${{ booking_search.room_price }}</span>
+              <span class="widget-price-unit">/ night</span>
+              <span class="discount-badge" id="w-discount" style="display:none;"></span>
+            </div>
+
+            <div class="widget-date-grid">
+              <div class="widget-date-field">
+                <div class="widget-date-label">Check-in</div>
+                <input type="date" id="w-checkin" name="checkIn" class="widget-date-value" value="{{ booking_search.checkIn }}">
+              </div>
+              <div class="widget-date-field">
+                <div class="widget-date-label">Check-out</div>
+                <input type="date" id="w-checkout" name="checkOut" class="widget-date-value" value="{{ booking_search.checkOut }}">
+              </div>
+            </div>
+
+            <div class="widget-guests-row">
+              <span class="widget-guests-label">Guests</span>
+              <div class="guests-counter" data-min="1" data-max="{{ hotel.max_guests }}">
+                <button type="button" class="counter-btn" id="guests-minus">−</button>
+                <span class="counter-num" id="guests-num">{{ booking_search.guests }}</span>
+                <button type="button" class="counter-btn" id="guests-plus">+</button>
+              </div>
+            </div>
+
+            <div id="w-room-selected" style="background:var(--teal-soft);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:block;">
+              <div style="font-size:13px;font-weight:600;" id="w-room-name">{{ booking_search.room_name }}</div>
+              <div style="font-size:12px;color:var(--muted);">Selected room</div>
+            </div>
+
+            <div class="widget-price-breakdown">
+              <div class="widget-row"><span id="w-nights-label">Room cost</span><span id="w-room-total">—</span></div>
+              <div class="widget-row"><span>Service fee</span><span id="w-service-fee">—</span></div>
+              <div class="widget-row"><span>Taxes</span><span id="w-taxes">—</span></div>
+            </div>
+            <hr class="widget-divider">
+            <div class="widget-total">
+              <span>Total</span>
+              <span id="w-total">—</span>
+            </div>
+
+            <button type="submit" class="btn btn-teal btn-full btn-lg" id="book-now-btn" style="margin-top:20px;text-align:center;">Book Now</button>
+
+            <div class="widget-cancellation">✅ Free cancellation available</div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Similar Hotels -->
+      <section class="section">
+        <div class="section-header">
+          <h2>You Might Also Like</h2>
+          <a href="/hotels/" class="view-all">View All Hotels →</a>
+        </div>
+        <div class="similar-hotels-grid" id="similar-hotels-grid">
+          <div class="hotel-card img-ph" style="min-height:280px;"></div>
+          <div class="hotel-card img-ph" style="min-height:280px;"></div>
+          <div class="hotel-card img-ph" style="min-height:280px;"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+</main>
+
+<footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="/" class="footer-logo">LuxeStay</a>
+          <p class="footer-desc">Your trusted partner for luxury hotel bookings across Turkey and beyond.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="Twitter">🐦</a>
+            <a href="#" aria-label="Facebook">📘</a>
+            <a href="#" aria-label="YouTube">▶️</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/hotels/">Hotels</a></li>
+            <li><a href="/destinations/">Destinations</a></li>
+            <li><a href="/offers/">Special Offers</a></li>
+            <li><a href="/about/">About Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul class="footer-links">
+            <li><a href="/contact/">Contact Us</a></li>
+            <li><a href="/contact/#faq">FAQs</a></li>
+            <li><a href="#">Cancellation Policy</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <div class="footer-contact-item">📞 +90 212 123 4567</div>
+          <div class="footer-contact-item">✉️ info@luxestay.com</div>
+          <div class="footer-contact-item">📍 Istanbul, Turkey</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">© 2026 LuxeStay. All rights reserved.</div>
+    </div>
+  </footer>
+  <script src="{% static 'shared/js/date-range.js' %}"></script>
+</body>
+</html>
