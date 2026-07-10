@@ -1,0 +1,254 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LuxeStay — Search Hotels</title>
+  <link rel="stylesheet" href="{% static 'shared/css/globals.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/styleguide.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/components.css' %}" />
+  <link rel="stylesheet" href="{% static 'hotels/css/hotels.css' %}" />
+</head>
+<body>
+<nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="nav-logo">LuxeStay</a>
+
+      <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+      <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </label>
+
+      <ul class="nav-links">
+        <li><a href="/" >Home</a></li>
+        <li><a href="/hotels/" class="active">Hotels</a></li>
+        <li><a href="/offers/">Offers</a></li>
+        <li><a href="/destinations/">Destinations</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/about/">About</a></li>
+      </ul>
+
+      <div class="nav-auth">
+  {% if user.is_authenticated %}
+  <a href="/dashboard/" class="btn btn-outline-teal btn-sm">Dashboard</a>
+  <a href="/auth/logout/" class="btn btn-teal btn-sm">Logout</a>
+  {% else %}
+  <a href="/auth/signup/" class="btn btn-outline-teal btn-sm">Sign Up</a>
+  <a href="/auth/login/" class="btn btn-teal btn-sm">Login</a>
+  {% endif %}
+</div>
+    </div>
+  </nav>
+
+
+  <!-- Top Search Bar -->
+  <div class="hotels-search-bar">
+    <div class="container">
+      <form class="hotels-search-inner" id="hotels-search-form" action="/hotels/" method="get">
+        <div class="hotels-search-field" style="flex:2;">
+          <span>📍</span>
+          <input type="text" id="hs-destination" name="destination" placeholder="Destination" value="{{ search.destination }}">
+        </div>
+        <div class="hotels-search-field">
+          <span>📅</span>
+          <input type="date" id="hs-checkin" name="checkIn" value="{{ search.checkIn }}">
+        </div>
+        <div class="hotels-search-field">
+          <span>📅</span>
+          <input type="date" id="hs-checkout" name="checkOut" value="{{ search.checkOut }}">
+        </div>
+        <div class="hotels-search-field" style="flex:0.7;">
+          <span>👥</span>
+          <select id="hs-guests" name="guests" style="border:none;outline:none;font-size:14px;background:none;">
+            <option value="1" {% if search.guests == "1" %}selected{% endif %}>1 Adult</option>
+            <option value="2" {% if search.guests == "2" %}selected{% endif %}>2 Adults</option>
+            <option value="3" {% if search.guests == "3" %}selected{% endif %}>3 Adults</option>
+            <option value="4" {% if search.guests == "4" %}selected{% endif %}>4 Adults</option>
+            <option value="5" {% if search.guests == "5" %}selected{% endif %}>5+ Adults</option>
+          </select>
+        </div>
+        {% if search.category %}<input type="hidden" name="category" value="{{ search.category }}">{% endif %}
+        <button type="submit" class="btn btn-teal">Modify Search</button>
+      </form>
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+      <div class="hotels-layout">
+
+        <!-- Filters Sidebar -->
+        <aside class="filters-panel">
+          <h3>Filters</h3>
+
+          <div class="filter-section">
+            <h4>Price Range</h4>
+            <div class="price-inputs">
+              <input type="number" class="price-input-field" id="f-min-price" placeholder="Min" value="50">
+              <span>—</span>
+              <input type="number" class="price-input-field" id="f-max-price" placeholder="Max" value="500">
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h4>Star Rating</h4>
+            <div class="filter-checkbox-list">
+              <label class="filter-checkbox"><input type="checkbox" value="5"> <span class="stars">★★★★★</span></label>
+              <label class="filter-checkbox"><input type="checkbox" value="4"> <span class="stars">★★★★</span>☆</label>
+              <label class="filter-checkbox"><input type="checkbox" value="3"> <span class="stars">★★★</span>☆☆</label>
+              <label class="filter-checkbox"><input type="checkbox" value="2"> <span class="stars">★★</span>☆☆☆</label>
+              <label class="filter-checkbox"><input type="checkbox" value="1"> <span class="stars">★</span>☆☆☆☆</label>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h4>Property Type</h4>
+            <div class="filter-checkbox-list">
+              <label class="filter-checkbox"><input type="checkbox" value="hotel"> Hotel</label>
+              <label class="filter-checkbox"><input type="checkbox" value="resort"> Resort</label>
+              <label class="filter-checkbox"><input type="checkbox" value="boutique"> Boutique</label>
+              <label class="filter-checkbox"><input type="checkbox" value="villa"> Villa</label>
+              <label class="filter-checkbox"><input type="checkbox" value="hostel"> Hostel</label>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h4>Amenities</h4>
+            <div class="filter-checkbox-list">
+              <label class="filter-checkbox"><input type="checkbox" value="pool"> Pool</label>
+              <label class="filter-checkbox"><input type="checkbox" value="spa"> Spa</label>
+              <label class="filter-checkbox"><input type="checkbox" value="wifi"> WiFi</label>
+              <label class="filter-checkbox"><input type="checkbox" value="parking"> Parking</label>
+              <label class="filter-checkbox"><input type="checkbox" value="restaurant"> Restaurant</label>
+              <label class="filter-checkbox"><input type="checkbox" value="gym"> Gym</label>
+              <label class="filter-checkbox"><input type="checkbox" value="beach"> Beach Access</label>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h4>Guest Rating</h4>
+            <div class="filter-checkbox-list">
+              <label class="filter-checkbox"><input type="radio" name="grating" value="9"> 9+ Exceptional</label>
+              <label class="filter-checkbox"><input type="radio" name="grating" value="8"> 8+ Very Good</label>
+              <label class="filter-checkbox"><input type="radio" name="grating" value="7"> 7+ Good</label>
+            </div>
+          </div>
+
+          <div class="filters-actions">
+            <button class="btn btn-teal btn-full" id="apply-filters-btn">Apply Filters</button>
+            <button class="btn btn-ghost btn-full" id="clear-filters-btn">Clear All</button>
+          </div>
+        </aside>
+
+        <!-- Results -->
+        <div>
+          <div class="results-header">
+            <div>
+              <div class="results-count" id="results-count"><strong>{{ result_count }}</strong> <span>properties found{% if has_search %} for your search{% endif %}</span></div>
+            </div>
+            <select class="sort-select" id="sort-select" name="sort" form="hotels-search-form" onchange="this.form.submit()">
+              <option value="recommended" {% if search.sort == "recommended" %}selected{% endif %}>Recommended</option>
+              <option value="price-asc" {% if search.sort == "price-asc" %}selected{% endif %}>Price: Low to High</option>
+              <option value="price-desc" {% if search.sort == "price-desc" %}selected{% endif %}>Price: High to Low</option>
+              <option value="rating" {% if search.sort == "rating" %}selected{% endif %}>Top Rated</option>
+            </select>
+          </div>
+
+          <div id="hotels-list">
+          {% for hotel in hotels %}
+          <article class="hotel-list-card">
+            <div class="hotel-list-img"><img src="{{ hotel.image_url }}" alt="{{ hotel.name }}" loading="lazy" /></div>
+            <div class="hotel-list-body">
+              <h3 class="hotel-list-name">{{ hotel.name }}</h3>
+              <div class="hotel-list-location">📍 {{ hotel.location }}</div>
+              <div class="hotel-card-rating" style="margin-top:8px;"><span class="stars">★★★★★</span><span class="rating-num">{{ hotel.rating }}</span><span class="rating-count">({{ hotel.review_count }} reviews)</span></div>
+              <div class="hotel-list-features">{% for amenity in hotel.amenities_list %}<span class="hotel-list-feature-tag">{{ amenity }}</span>{% endfor %}</div>
+            </div>
+            <div class="hotel-list-price">
+              <div><div class="hotel-list-price-old">${{ hotel.original_price }} <span class="discount-badge">-{{ hotel.discount_percent }}%</span></div><div class="hotel-list-price-current">${{ hotel.current_price }}</div><div class="hotel-list-price-unit">per night</div></div>
+              <a href="/hotels/detail/?id={{ hotel.code }}{% if search.checkIn %}&checkIn={{ search.checkIn }}{% endif %}{% if search.checkOut %}&checkOut={{ search.checkOut }}{% endif %}{% if search.guests %}&guests={{ search.guests }}{% endif %}" class="btn btn-teal">View Deal</a>
+              {% if user.is_authenticated %}
+              <form action="/dashboard/saved/toggle/" method="post" style="margin-top:8px;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="save">
+                <input type="hidden" name="hotel_code" value="{{ hotel.code }}">
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="btn btn-ghost btn-sm"{% if hotel.code in saved_codes %} disabled{% endif %}>{% if hotel.code in saved_codes %}Saved{% else %}Save{% endif %}</button>
+              </form>
+              {% endif %}
+            </div>
+          </article>
+          {% empty %}
+          <div class="hotel-list-card" style="padding:32px;">
+            <div>
+              <h3 class="hotel-list-name">No matching stays found</h3>
+              <p style="color:var(--muted);margin-top:8px;">Try another destination, category, or guest count.</p>
+              <a href="/hotels/" class="btn btn-teal" style="margin-top:18px;">Clear Search</a>
+            </div>
+          </div>
+          {% endfor %}
+          </div>
+          {% if result_count > 0 %}<div class="pagination"><button class="page-btn active">1</button></div>{% endif %}
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+
+<footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="/" class="footer-logo">LuxeStay</a>
+          <p class="footer-desc">Your trusted partner for luxury hotel bookings across Turkey and beyond.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="Twitter">🐦</a>
+            <a href="#" aria-label="Facebook">📘</a>
+            <a href="#" aria-label="YouTube">▶️</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/hotels/">Hotels</a></li>
+            <li><a href="/destinations/">Destinations</a></li>
+            <li><a href="/offers/">Special Offers</a></li>
+            <li><a href="/about/">About Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul class="footer-links">
+            <li><a href="/contact/">Contact Us</a></li>
+            <li><a href="/contact/#faq">FAQs</a></li>
+            <li><a href="#">Cancellation Policy</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <div class="footer-contact-item">📞 +90 212 123 4567</div>
+          <div class="footer-contact-item">✉️ info@luxestay.com</div>
+          <div class="footer-contact-item">📍 Istanbul, Turkey</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">© 2026 LuxeStay. All rights reserved.</div>
+    </div>
+  </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      fetch('/api/hotels/' + window.location.search)
+        .then(function (response) { return response.json(); })
+        .then(function (data) { console.log('LuxeStay hotel API response', data); })
+        .catch(function (error) { console.warn('Hotel API demo request failed', error); });
+    });
+  </script>
+</body>
+</html>

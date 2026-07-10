@@ -1,0 +1,340 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LuxeStay Dashboard</title>
+  <link rel="stylesheet" href="{% static 'shared/css/globals.css' %}">
+  <link rel="stylesheet" href="{% static 'shared/css/styleguide.css' %}">
+  <link rel="stylesheet" href="{% static 'shared/css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+  <meta http-equiv="Cache-Control" content="no-store">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="nav-logo">LuxeStay</a>
+      <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true">
+      <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle menu"><span></span><span></span><span></span></label>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/hotels/">Hotels</a></li>
+        <li><a href="/offers/">Offers</a></li>
+        <li><a href="/destinations/">Destinations</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/about/">About</a></li>
+      </ul>
+      <div class="nav-auth">
+        <a href="/dashboard/" class="btn btn-outline-teal btn-sm">Dashboard</a>
+        <a href="/auth/logout/" class="btn btn-teal btn-sm">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="dashboard-shell">
+    <aside class="dashboard-rail">
+      <a href="/dashboard/" class="dashboard-account">
+        <span class="dashboard-avatar">{{ account_initials }}</span>
+        <span>
+          <strong>{{ account_name }}</strong>
+          <small>{{ reward_tier }} member</small>
+        </span>
+      </a>
+      <nav class="dashboard-nav" aria-label="Dashboard">
+        {% for key, item in dashboard_sections.items %}
+        <a href="{% url item.url_name %}" class="{% if active_section == key %}active{% endif %}">{{ item.label }}</a>
+        {% endfor %}
+      </nav>
+      <a class="dashboard-book-link" href="/hotels/">Book a stay</a>
+    </aside>
+
+    <section class="dashboard-workspace">
+      <header class="workspace-head">
+        <div>
+          <p class="workspace-kicker">Travel control center</p>
+          <h1>{% if active_section == "overview" %}Dashboard{% else %}{{ active_section|title }}{% endif %}</h1>
+          <p>Bookings, saved hotels, payment records, reviews, and account settings in one place.</p>
+        </div>
+        <div class="workspace-status">
+          <strong>{{ bookings_count }}</strong>
+          <span>reservation{{ bookings_count|pluralize }} for {{ user.email }}</span>
+        </div>
+      </header>
+
+      <div class="dashboard-metrics">
+        <a href="/dashboard/bookings/" class="metric"><span>Bookings</span><strong>{{ bookings_count }}</strong></a>
+        <a href="/dashboard/saved/" class="metric"><span>Saved Hotels</span><strong>{{ saved_count }}</strong></a>
+        <a href="/dashboard/rewards/" class="metric"><span>Reward Points</span><strong>{{ reward_points }}</strong></a>
+        <a href="/dashboard/payment-methods/" class="metric"><span>Member Tier</span><strong>{{ reward_tier }}</strong></a>
+      </div>
+
+      {% if active_section == "overview" %}
+      <div class="workspace-grid">
+        <section class="workspace-panel panel-wide">
+          <div class="panel-head"><h2>My Bookings</h2><a href="/dashboard/bookings/">Open bookings</a></div>
+          <div class="stay-list">
+            {% for booking in recent_bookings %}
+            <article class="stay-row">
+              <img src="{{ booking.hotel.image_url }}" alt="{{ booking.hotel.name }}">
+              <div>
+                <strong>{{ booking.hotel.name }}</strong>
+                <span>{{ booking.check_in|date:"d M Y" }} to {{ booking.check_out|date:"d M Y" }} | {{ booking.display_reference }}</span>
+              </div>
+              <em class="tone-{{ booking.status }} status-{{ booking.status }}">{{ booking.get_status_display|upper }}</em>
+              <b>${{ booking.total_amount }}</b>
+            </article>
+            {% empty %}
+            <div class="empty-state">Your first paid reservation will appear here.</div>
+            {% endfor %}
+          </div>
+        </section>
+        <section class="workspace-panel">
+          <div class="panel-head"><h2>Saved Hotels</h2><a href="/dashboard/saved/">View all</a></div>
+          <div class="saved-mini-list">
+            {% for saved in saved_hotels|slice:":3" %}
+            <a href="/hotels/detail/?id={{ saved.hotel.code }}">
+              <img src="{{ saved.hotel.image_url }}" alt="{{ saved.hotel.name }}">
+              <span><strong>{{ saved.hotel.name }}</strong><small>{{ saved.hotel.location }}</small></span>
+            </a>
+            {% empty %}
+            <div class="empty-state">Saved hotels are waiting for your next search.</div>
+            {% endfor %}
+          </div>
+        </section>
+        <section class="workspace-panel">
+          <div class="panel-head"><h2>Recent Payments</h2><a href="/dashboard/payment-methods/">Billing</a></div>
+          <div class="payment-feed">
+            {% for booking in billing_bookings|slice:":4" %}
+            <div><span>{{ booking.created_at|date:"d M" }} | {{ booking.display_reference }}</span><strong>${{ booking.total_amount }}</strong></div>
+            {% empty %}
+            <div class="empty-state">Checkout activity will be listed here.</div>
+            {% endfor %}
+          </div>
+        </section>
+        <section class="workspace-panel panel-wide">
+          <div class="panel-head"><h2>Updates</h2><a href="/dashboard/notifications/">All updates</a></div>
+          <div class="update-strip">
+            {% for notification in notifications|slice:":3" %}
+            <article class="update tone-{{ notification.tone }}">
+              <strong>{{ notification.title }}</strong>
+              <span>{{ notification.body }}</span>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+      </div>
+      {% endif %}
+
+      {% if active_section == "bookings" %}
+      <section class="workspace-panel">
+        <div class="panel-head">
+          <div><h2>My Bookings</h2><p>Showing {{ dashboard_bookings_count }} reservation{{ dashboard_bookings_count|pluralize }} for {{ user.email }}</p></div>
+          <a href="/hotels/">New booking</a>
+        </div>
+        <div class="booking-board">
+          {% for booking in bookings %}
+          <article class="booking-item">
+            <img src="{{ booking.hotel.image_url }}" alt="{{ booking.hotel.name }}">
+            <div>
+              <strong>{{ booking.hotel.name }}</strong>
+              <span>{{ booking.hotel.location }}</span>
+              <small>{{ booking.check_in|date:"d M Y" }} to {{ booking.check_out|date:"d M Y" }} | {{ booking.guests }} guest{{ booking.guests|pluralize }}</small>
+            </div>
+            <div class="booking-side"><em class="tone-{{ booking.status }} status-{{ booking.status }}">{{ booking.get_status_display|upper }}</em><b>${{ booking.total_amount }}</b><small>{{ booking.display_reference }}</small></div>
+          </article>
+          {% empty %}
+          <div class="empty-state">No bookings yet.</div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      {% if active_section == "saved" %}
+      <section class="workspace-panel">
+        <div class="panel-head">
+          <div><h2>Saved Hotels</h2><p>Showing {{ dashboard_saved_count }} saved hotel{{ dashboard_saved_count|pluralize }} for {{ user.email }}</p></div>
+          <a href="/hotels/">Browse hotels</a>
+        </div>
+        <div class="saved-board">
+          {% for saved in saved_hotels %}
+          <article class="saved-hotel">
+            <img src="{{ saved.hotel.image_url }}" alt="{{ saved.hotel.name }}">
+            <div>
+              <strong>{{ saved.hotel.name }}</strong>
+              <span>{{ saved.hotel.location }}</span>
+              <small>${{ saved.hotel.current_price }} per night | {{ saved.hotel.rooms_left }} rooms left</small>
+            </div>
+            <div class="item-actions">
+              <a href="/hotels/detail/?id={{ saved.hotel.code }}" class="btn btn-teal btn-sm">View</a>
+              <form action="/dashboard/saved/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="remove">
+                <input type="hidden" name="hotel_code" value="{{ saved.hotel.code }}">
+                <button type="submit" class="btn btn-ghost btn-sm">Remove</button>
+              </form>
+            </div>
+          </article>
+          {% empty %}
+          <div class="empty-state">No saved hotels yet. Use Save on a hotel result first.</div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      {% if active_section == "payments" %}
+      <div class="workspace-grid">
+        <section class="workspace-panel">
+          <div class="panel-head"><h2>Payment Methods</h2></div>
+          <div class="method-list">
+            {% for method in payment_methods %}
+            <article class="method">
+              <div><strong>{{ method.brand }} ending in {{ method.last4 }}</strong><span>{{ method.cardholder_name }} | Expires {{ method.expiry_display }}</span></div>
+              {% if method.is_default %}<em>Default</em>{% endif %}
+              <div class="item-actions">
+                {% if not method.is_default %}
+                <form action="/dashboard/payment-methods/" method="post">{% csrf_token %}<input type="hidden" name="action" value="default"><input type="hidden" name="method_id" value="{{ method.id }}"><button class="btn btn-ghost btn-sm">Default</button></form>
+                {% endif %}
+                <form action="/dashboard/payment-methods/" method="post">{% csrf_token %}<input type="hidden" name="action" value="delete"><input type="hidden" name="method_id" value="{{ method.id }}"><button class="btn btn-ghost btn-sm">Remove</button></form>
+              </div>
+            </article>
+            {% empty %}
+            <div class="empty-state">No saved payment method yet.</div>
+            {% endfor %}
+          </div>
+        </section>
+        <section class="workspace-panel">
+          <div class="panel-head"><h2>Add card</h2></div>
+          {% if payment_error %}<div class="dashboard-error">{{ payment_error }}</div>{% endif %}
+          <form action="/dashboard/payment-methods/" method="post" class="dashboard-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add">
+            <label>Name on card<input class="form-input" name="cardholder_name" required></label>
+            <label>Card number<input class="form-input" name="card_number" inputmode="numeric" placeholder="4242 4242 4242 4242" required></label>
+            <div class="form-pair">
+              <label>Expiry<input class="form-input" name="expiry" placeholder="MM/YY" required></label>
+              <label>CVV<input class="form-input" name="cvv" inputmode="numeric" required></label>
+            </div>
+            <button type="submit" class="btn btn-teal">Save card</button>
+          </form>
+        </section>
+        <section class="workspace-panel panel-full">
+          <div class="panel-head"><h2>Billing History</h2></div>
+          <div class="dashboard-table-wrap"><table class="dashboard-table"><thead><tr><th>Date</th><th>Description</th><th>Method</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+            {% for booking in billing_bookings %}
+            <tr><td>{{ booking.created_at|date:"d M Y" }}</td><td>{{ booking.hotel.name }} | {{ booking.display_reference }}</td><td>{{ booking.get_payment_method_display }}</td><td>${{ booking.total_amount }}</td><td>{{ booking.get_status_display }}</td></tr>
+            {% empty %}
+            <tr><td colspan="5">No billing history yet.</td></tr>
+            {% endfor %}
+          </tbody></table></div>
+        </section>
+      </div>
+      {% endif %}
+
+      {% if active_section == "reviews" %}
+      <div class="workspace-grid">
+        <section class="workspace-panel">
+          <div class="panel-head"><h2>My Reviews</h2></div>
+          <div class="review-list">
+            {% for review in reviews %}
+            <article class="review">
+              <img src="{{ review.hotel.image_url }}" alt="{{ review.hotel.name }}">
+              <div><strong>{{ review.hotel.name }}</strong><span>{{ review.comment|default:"No comment added." }}</span><small>{{ review.created_at|date:"d M Y" }} | {{ review.booking.display_reference }}</small></div>
+              <em>{{ review.rating }}/5</em>
+            </article>
+            {% empty %}
+            <div class="empty-state">No reviews written yet.</div>
+            {% endfor %}
+          </div>
+        </section>
+        <section class="workspace-panel">
+          <div class="panel-head"><h2>Awaiting Review</h2></div>
+          {% for booking in reviewable_bookings %}
+          <form action="/dashboard/reviews/" method="post" class="review-form">
+            {% csrf_token %}
+            <input type="hidden" name="booking_id" value="{{ booking.id }}">
+            <strong>{{ booking.hotel.name }}</strong>
+            <small>{{ booking.display_reference }} | {{ booking.check_in|date:"d M Y" }}</small>
+            <div class="form-pair">
+              <label>Rating<select name="rating" class="form-input"><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option></select></label>
+              <label>Comment<input name="comment" class="form-input"></label>
+            </div>
+            <button class="btn btn-teal btn-sm">Submit review</button>
+          </form>
+          {% empty %}
+          <div class="empty-state">No stay is waiting for review.</div>
+          {% endfor %}
+        </section>
+      </div>
+      {% endif %}
+
+      {% if active_section == "rewards" %}
+      <div class="workspace-grid">
+        <section class="workspace-panel reward-ledger">
+          <div class="panel-head"><h2>Rewards</h2></div>
+          <strong>{{ reward_points }}</strong>
+          <span>{{ reward_tier }} tier | ${{ reward_value }} travel credit estimate</span>
+          <div class="reward-track"><i style="width:{{ tier_progress }}%"></i></div>
+          <small>{{ reward_points }} of {{ tier_end }} lifetime points</small>
+        </section>
+        <section class="workspace-panel">
+          <div class="panel-head"><h2>Point Activity</h2></div>
+          <div class="payment-feed">
+            {% for booking in points_history %}
+            <div><span>{{ booking.hotel.name }} | {{ booking.created_at|date:"d M Y" }}</span><strong>+{{ booking.total_amount|floatformat:0 }}</strong></div>
+            {% empty %}
+            <div class="empty-state">Points arrive with completed checkout activity.</div>
+            {% endfor %}
+          </div>
+        </section>
+      </div>
+      {% endif %}
+
+      {% if active_section == "profile" %}
+      <div class="workspace-grid">
+        <section class="workspace-panel">
+          <div class="panel-head"><h2>Profile</h2></div>
+          {% if dashboard_message %}<div class="dashboard-message">{{ dashboard_message }}</div>{% endif %}
+          {% if dashboard_error %}<div class="dashboard-error">{{ dashboard_error }}</div>{% endif %}
+          <form action="/dashboard/profile/" method="post" class="dashboard-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="profile">
+            <div class="form-pair"><label>First name<input class="form-input" name="first_name" value="{{ user.first_name }}"></label><label>Last name<input class="form-input" name="last_name" value="{{ user.last_name }}"></label></div>
+            <label>Email<input class="form-input" type="email" name="email" value="{{ user.email }}"></label>
+            <div class="form-pair"><label>Phone<input class="form-input" name="phone" value="{{ profile.phone }}"></label><label>Nationality<input class="form-input" name="nationality" value="{{ profile.nationality }}"></label></div>
+            <div class="toggle-list"><label><input type="checkbox" name="marketing_emails" {% if profile.marketing_emails %}checked{% endif %}> Marketing emails</label><label><input type="checkbox" name="booking_notifications" {% if profile.booking_notifications %}checked{% endif %}> Booking notifications</label><label><input type="checkbox" name="reward_updates" {% if profile.reward_updates %}checked{% endif %}> Reward updates</label></div>
+            <button class="btn btn-teal">Save profile</button>
+          </form>
+        </section>
+        <section class="workspace-panel">
+          <div class="panel-head"><h2>Password</h2></div>
+          <form action="/dashboard/profile/" method="post" class="dashboard-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="password">
+            <label>Current password<input class="form-input" type="password" name="current_password"></label>
+            <label>New password<input class="form-input" type="password" name="new_password"></label>
+            <label>Confirm password<input class="form-input" type="password" name="confirm_password"></label>
+            <button class="btn btn-teal">Update password</button>
+          </form>
+        </section>
+      </div>
+      {% endif %}
+
+      {% if active_section == "notifications" %}
+      <section class="workspace-panel">
+        <div class="panel-head"><h2>Account Updates</h2></div>
+        <div class="update-list">
+          {% for notification in notifications %}
+          <article class="update tone-{{ notification.tone }}">
+            <strong>{{ notification.title }}</strong>
+            <span>{{ notification.body }}</span>
+            {% if notification.created_at %}<small>{{ notification.created_at|date:"d M Y H:i" }}</small>{% endif %}
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>
