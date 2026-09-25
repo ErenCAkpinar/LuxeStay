@@ -1,7 +1,8 @@
-[LuxeStay-README.md](https://github.com/user-attachments/files/29676340/LuxeStay-README.md)
 # LuxeStay 🏨
 
 A hotel reservation website built as a team project for **CMPE312 (Software Engineering)** at Eastern Mediterranean University.
+
+**Live demo:** [open the site](https://erencakpinar.github.io/LuxeStay/luxestay_website/home/html/index.html) (static UI prototype built with HTML/CSS; there is no backend yet, so login, booking and payment forms are not functional)
 
 LuxeStay covers the full booking journey of a modern hotel platform: browsing and searching hotels, viewing room details, a 3-step checkout flow, booking confirmation, and a user dashboard with reservations, saved hotels, and rewards.
 
