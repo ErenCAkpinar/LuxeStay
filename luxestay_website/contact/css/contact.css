@@ -2,7 +2,7 @@
 
 /* ── Broken asset URL fix ── */
 .contact-hero::before {
-  background: url("../../shared/css/img/hero-bg.jpg") center/cover !important;
+  background: url("../../img/hero-bg.jpg") center/cover !important;
   opacity: 0.25;
 }
 
