@@ -22,7 +22,7 @@ LuxeStay covers the full booking journey of a modern hotel platform: browsing an
 
 Every screen was designed in **Figma** first — 20+ frames covering the complete user flow — then implemented as a responsive multi-page site in plain **HTML and CSS**. The visual identity uses a teal (`#1A7A6E`) and warm off-white (`#FDF6F0`) palette.
 
-The project also includes a full **SRS document** (requirements, UML diagrams, and the end-to-end booking flow) written as part of the course deliverables.
+The team also wrote a full **SRS document** (requirements, UML diagrams and the end-to-end booking flow) as a course deliverable; it is not included in this repository.
 
 ## Running locally
 
