@@ -2,7 +2,7 @@
 
 /* ── Broken asset URL fix ── */
 .offers-hero::before {
-  background: url("../../shared/css/img/hero-bg.jpg") center/cover !important;
+  background: url("../../img/hero-bg.jpg") center/cover !important;
   opacity: 0.25;
 }
 
@@ -73,7 +73,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: url("img/hero-bg.jpg") center/cover no-repeat;
+  background: url("../../img/hero-bg.jpg") center/cover no-repeat;
   opacity: 0.35;
 }
 
