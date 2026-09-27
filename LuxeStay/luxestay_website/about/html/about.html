@@ -1,0 +1,244 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LuxeStay — About Us</title>
+  <link rel="stylesheet" href="{% static 'shared/css/globals.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/styleguide.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/components.css' %}" />
+  <link rel="stylesheet" href="{% static 'about/css/about.css' %}" />
+</head>
+<body>
+<nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="nav-logo">LuxeStay</a>
+
+      <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+      <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </label>
+
+      <ul class="nav-links">
+        <li><a href="/" >Home</a></li>
+        <li><a href="/hotels/">Hotels</a></li>
+        <li><a href="/offers/">Offers</a></li>
+        <li><a href="/destinations/">Destinations</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/about/" class="active">About</a></li>
+      </ul>
+
+      <div class="nav-auth">
+  {% if user.is_authenticated %}
+  <a href="/dashboard/" class="btn btn-outline-teal btn-sm">Dashboard</a>
+  <a href="/auth/logout/" class="btn btn-teal btn-sm">Logout</a>
+  {% else %}
+  <a href="/auth/signup/" class="btn btn-outline-teal btn-sm">Sign Up</a>
+  <a href="/auth/login/" class="btn btn-teal btn-sm">Login</a>
+  {% endif %}
+</div>
+    </div>
+  </nav>
+
+
+  <main>
+    <!-- Hero -->
+    <section class="about-hero">
+      <div class="about-hero-overlay"></div>
+      <div class="container about-hero-inner">
+        <div class="about-hero-badge">Est. 2018</div>
+        <h1 class="about-hero-title">Redefining Luxury Travel</h1>
+        <p class="about-hero-sub">LuxeStay was founded with a single mission: make world-class hotels accessible to everyone who appreciates the finer things in life.</p>
+      </div>
+    </section>
+
+    <div class="container">
+
+      <!-- Mission -->
+      <section class="about-mission ">
+        <div class="about-mission-text">
+          <h2>Our Mission</h2>
+          <p>We believe every journey deserves to begin in comfort. LuxeStay curates only the finest properties worldwide — from beachfront resorts in Turkey to overwater villas in the Maldives — so you can book with confidence and arrive in style.</p>
+          <p style="margin-top:16px;">Our team of travel specialists personally vets every hotel, ensuring they meet our exacting standards for service, amenities, and guest experience.</p>
+        </div>
+        <div class="about-mission-img" style="min-height:360px;border-radius:20px;background-image:url('{% static 'img/hero-bg.jpg' %}');"></div>
+      </section>
+
+      <!-- Stats -->
+      <div class="about-stats ">
+        <div class="about-stat">
+          <div class="about-stat-num" data-target="1200">1,200+</div>
+          <div class="about-stat-label">Curated Hotels</div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-num" data-target="40">40+</div>
+          <div class="about-stat-label">Countries</div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-num" data-target="500000">500K+</div>
+          <div class="about-stat-label">Happy Guests</div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-num" data-target="98">98%</div>
+          <div class="about-stat-label">% Satisfaction</div>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <section class="section">
+        <div class="section-header"><h2>Our Story</h2></div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-year">2018</div>
+            <div class="timeline-content">
+              <h4>Founded in Istanbul</h4>
+              <p>LuxeStay launched with 50 handpicked hotels across Turkey, built by a small team of hospitality professionals who wanted to change how people book luxury travel.</p>
+            </div>
+          </div>
+          <div class="timeline-item timeline-right">
+            <div class="timeline-year">2020</div>
+            <div class="timeline-content">
+              <h4>Expanded to 10 Countries</h4>
+              <p>Despite a challenging year for travel, we grew our portfolio to cover the Middle East, Greece, and Spain, onboarding over 300 properties.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2022</div>
+            <div class="timeline-content">
+              <h4>Launched LuxeStay Rewards</h4>
+              <p>Our loyalty program launched to global acclaim, with over 100,000 members signing up within the first three months and earning points on every booking.</p>
+            </div>
+          </div>
+          <div class="timeline-item timeline-right">
+            <div class="timeline-year">2024</div>
+            <div class="timeline-content">
+              <h4>1,000+ Hotels Milestone</h4>
+              <p>We crossed 1,000 curated properties across 35 countries, serving half a million guests and earning recognition as a top luxury booking platform.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2026</div>
+            <div class="timeline-content">
+              <h4>Global Expansion</h4>
+              <p>Reaching 40 countries and 1,200 properties, LuxeStay continues to set the standard for curated luxury travel worldwide.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Team -->
+      <section class="section ">
+        <div class="section-header"><h2>Meet the Team</h2></div>
+        <div class="team-grid">
+          <div class="team-card">
+            <div class="team-avatar avatar" style="width:80px;height:80px;font-size:28px;">ST</div>
+            <div class="team-name">Sefa Tan</div>
+            <div class="team-role">Project manager</div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar avatar" style="width:80px;height:80px;font-size:28px;">ES</div>
+            <div class="team-name">Ege Soykara</div>
+            <div class="team-role">Data-Base & Backend Developer</div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar avatar" style="width:80px;height:80px;font-size:28px;">EA</div>
+            <div class="team-name">Eren Çağrı Akpınar</div>
+            <div class="team-role">UI/UX Developer & Frontend Developer</div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar avatar" style="width:80px;height:80px;font-size:28px;">ME</div>
+            <div class="team-name">Metehan Eriş</div>
+            <div class="team-role">Tester.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Values -->
+      <section class="about-values ">
+        <h2 style="text-align:center;margin-bottom:40px;">What We Stand For</h2>
+        <div class="values-grid">
+          <div class="value-card">
+            <div class="value-icon">🏆</div>
+            <h4>Uncompromising Quality</h4>
+            <p>Every property is hand-verified by our curation team. If it doesn't meet our standards, it doesn't make the list.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">🤝</div>
+            <h4>Transparent Pricing</h4>
+            <p>No hidden fees. The price you see is the price you pay, including all taxes and service charges shown upfront.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">🌍</div>
+            <h4>Sustainable Travel</h4>
+            <p>We partner with eco-certified hotels and offset carbon emissions for every booking made through our platform.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">💎</div>
+            <h4>Member-First</h4>
+            <p>Our Rewards program gives back generously — earn points, unlock perks, and enjoy exclusive member-only rates.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="about-cta ">
+        <h2>Ready to Experience LuxeStay?</h2>
+        <p>Join half a million travelers who've discovered the world's finest hotels through our curated platform.</p>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:32px;">
+          <a href="/hotels/" class="btn btn-teal btn-lg">Browse Hotels</a>
+          <a href="/auth/signup/" class="btn btn-outline-teal btn-lg">Join for Free</a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+
+<footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="/" class="footer-logo">LuxeStay</a>
+          <p class="footer-desc">Your trusted partner for luxury hotel bookings across Turkey and beyond.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="Twitter">🐦</a>
+            <a href="#" aria-label="Facebook">📘</a>
+            <a href="#" aria-label="YouTube">▶️</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/hotels/">Hotels</a></li>
+            <li><a href="/destinations/">Destinations</a></li>
+            <li><a href="/offers/">Special Offers</a></li>
+            <li><a href="/about/">About Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul class="footer-links">
+            <li><a href="/contact/">Contact Us</a></li>
+            <li><a href="/contact/#faq">FAQs</a></li>
+            <li><a href="#">Cancellation Policy</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <div class="footer-contact-item">📞 +90 212 123 4567</div>
+          <div class="footer-contact-item">✉️ info@luxestay.com</div>
+          <div class="footer-contact-item">📍 Istanbul, Turkey</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">© 2026 LuxeStay. All rights reserved.</div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payments</title>
+  <link rel="stylesheet" href="{% static 'shared/css/globals.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/styleguide.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/components.css' %}" />
+  <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}" />
+</head>
+<body>
+<nav class="navbar">
+  <div class="container navbar-inner">
+    <a href="/" class="nav-logo">LuxeStay</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Menu"><span></span><span></span><span></span></label>
+    <ul class="nav-links"><li><a href="/">Home</a></li><li><a href="/hotels/">Hotels</a></li><li><a href="/offers/">Offers</a></li><li><a href="/destinations/">Destinations</a></li><li><a href="/contact/">Contact</a></li><li><a href="/about/">About</a></li></ul>
+    <div class="nav-auth">
+  {% if user.is_authenticated %}
+  <a href="/dashboard/" class="btn btn-outline-teal btn-sm">Dashboard</a>
+  <a href="/auth/logout/" class="btn btn-teal btn-sm">Logout</a>
+  {% else %}
+  <a href="/auth/signup/" class="btn btn-outline-teal btn-sm">Sign Up</a>
+  <a href="/auth/login/" class="btn btn-teal btn-sm">Login</a>
+  {% endif %}
+</div>
+  </div>
+</nav>
+<div class="dashboard-layout"><aside class="dashboard-sidebar">
+  <div class="sidebar-user">
+  <div class="avatar avatar-lg">{{ account_initials }}</div>
+  <div class="sidebar-user-name">{{ account_name }}</div>
+  <div class="sidebar-user-email">{{ user.email }}</div>
+  <span class="tier-badge tier-gold">{{ reward_tier }} Member</span>
+</div>
+  <nav><ul class="sidebar-nav"><li><a href="/dashboard/" class="sidebar-nav-link">Overview</a></li><li><a href="/dashboard/bookings/" class="sidebar-nav-link">My Bookings</a></li><li><a href="/dashboard/saved/" class="sidebar-nav-link">Saved Hotels</a></li><li><a href="/dashboard/profile/" class="sidebar-nav-link">Profile</a></li><li><a href="/dashboard/notifications/" class="sidebar-nav-link">Notifications</a></li><li><a href="/dashboard/payment-methods/" class="sidebar-nav-link active">Payment Methods</a></li><li><a href="/dashboard/reviews/" class="sidebar-nav-link">My Reviews</a></li><li><a href="/dashboard/rewards/" class="sidebar-nav-link">Rewards</a></li></ul></nav>
+  <a href="/auth/logout/" class="sidebar-signout">Sign Out</a>
+</aside>
+<div class="dashboard-main"><div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title">Payment Methods</h1>
+          <p class="dashboard-subtitle">Manage your saved cards and billing details.</p>
+        </div>
+        <button class="btn btn-teal" id="add-card-btn">+ Add Card</button>
+      </div>
+
+      <!-- Saved cards -->
+      <div id="cards-list">
+        {% for method in payment_methods %}
+        <article class="booking-card">
+          <div class="booking-card-body">
+            <div class="booking-card-top">
+              <div><div class="booking-card-hotel">{{ method.brand }} ending in {{ method.last4 }}</div><div class="booking-card-loc">{{ method.cardholder_name }} · Expires {{ method.expiry_display }}</div></div>
+              {% if method.is_default %}<span class="status-badge status-upcoming">DEFAULT</span>{% endif %}
+            </div>
+            <div class="booking-card-footer" style="display:flex;gap:10px;flex-wrap:wrap;">
+              {% if not method.is_default %}
+              <form action="/dashboard/payment-methods/" method="post">
+                {% csrf_token %}<input type="hidden" name="action" value="default"><input type="hidden" name="method_id" value="{{ method.id }}">
+                <button type="submit" class="btn btn-ghost btn-sm">Make Default</button>
+              </form>
+              {% endif %}
+              <form action="/dashboard/payment-methods/" method="post">
+                {% csrf_token %}<input type="hidden" name="action" value="delete"><input type="hidden" name="method_id" value="{{ method.id }}">
+                <button type="submit" class="btn btn-ghost btn-sm">Remove</button>
+              </form>
+            </div>
+          </div>
+        </article>
+        {% empty %}
+        <p style="color:var(--muted);">No saved payment methods yet.</p>
+        {% endfor %}
+      </div>
+
+      <div class="profile-section" id="add-card-form" style="margin-top:24px;">
+        <h3 style="margin-bottom:20px;">Add New Card</h3>
+        {% if payment_error %}<div class="auth-error" style="margin-bottom:16px;">{{ payment_error }}</div>{% endif %}
+        <form action="/dashboard/payment-methods/" method="post" id="dashboard-card-form" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add">
+          <div class="form-group">
+            <label class="form-label">Name on Card</label>
+            <input type="text" class="form-input" name="cardholder_name" id="dash-cardholder" placeholder="Ahmet Kara" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Card Number</label>
+            <input type="text" class="form-input" name="card_number" id="dash-card-number" placeholder="4242 4242 4242 4242" maxlength="23" inputmode="numeric" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Expiry</label>
+              <input type="text" class="form-input" name="expiry" id="dash-expiry" placeholder="MM/YY" maxlength="5" inputmode="numeric" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">CVV</label>
+              <input type="text" class="form-input" name="cvv" id="dash-cvv" placeholder="123" maxlength="4" inputmode="numeric" required>
+            </div>
+          </div>
+          <button class="btn btn-teal" type="submit" style="margin-top:8px;">Save Card</button>
+        </form>
+      </div>
+
+      <script>
+        const dashCardNumber = document.getElementById('dash-card-number');
+        const dashExpiry = document.getElementById('dash-expiry');
+        const dashCvv = document.getElementById('dash-cvv');
+
+        function digitsOnly(value) {
+          return value.replace(/\D/g, '');
+        }
+
+        function formatCardNumber(value) {
+          return digitsOnly(value).slice(0, 19).replace(/(.{4})/g, '$1 ').trim();
+        }
+
+        function formatExpiry(value) {
+          const digits = digitsOnly(value).slice(0, 4);
+          if (digits.length <= 2) return digits;
+          return digits.slice(0, 2) + '/' + digits.slice(2);
+        }
+
+        function expiryIsValid(value) {
+          if (!/^\d{2}\/\d{2}$/.test(value)) return false;
+          const month = Number(value.slice(0, 2));
+          const year = 2000 + Number(value.slice(3, 5));
+          const now = new Date();
+          if (month < 1 || month > 12) return false;
+          if (year < now.getFullYear()) return false;
+          return year !== now.getFullYear() || month >= now.getMonth() + 1;
+        }
+
+        dashCardNumber.addEventListener('input', function() {
+          this.value = formatCardNumber(this.value);
+        });
+
+        dashExpiry.addEventListener('input', function() {
+          this.value = formatExpiry(this.value);
+        });
+
+        dashCvv.addEventListener('input', function() {
+          this.value = digitsOnly(this.value).slice(0, 4);
+        });
+
+        document.getElementById('dashboard-card-form').addEventListener('submit', function(event) {
+          const cardholder = document.getElementById('dash-cardholder').value.trim();
+          const number = digitsOnly(dashCardNumber.value);
+          const cvv = digitsOnly(dashCvv.value);
+          if (!cardholder || number.length < 13 || number.length > 19 || !expiryIsValid(dashExpiry.value) || cvv.length < 3 || cvv.length > 4) {
+            event.preventDefault();
+            alert('Please enter a valid card number, MM/YY expiry date, and 3-4 digit CVV.');
+          }
+        });
+      </script>
+
+      <!-- Billing history -->
+      <div class="profile-section" style="margin-top:32px;">
+        <h3 style="margin-bottom:20px;">Billing History</h3>
+        <div class="transaction-table-wrap">
+          <table class="transaction-table">
+            <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody id="billing-tbody">
+              {% for booking in billing_bookings %}
+              <tr><td>{{ booking.created_at|date:"d M Y" }}</td><td>{{ booking.hotel.name }} · {{ booking.display_reference }}</td><td>${{ booking.total_amount }}</td><td>{{ booking.get_status_display }}</td></tr>
+              {% empty %}
+              <tr><td colspan="4" style="color:var(--muted);text-align:center;padding:24px;">No billing history yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div></div></div><footer class="footer">
+  <div class="container"><div class="footer-bottom"><div class="container">© 2026 LuxeStay</div></div></div>
+</footer>
+</body>
+</html>

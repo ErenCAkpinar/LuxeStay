@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LuxeStay — Create Account</title>
+  <link rel="stylesheet" href="{% static 'shared/css/globals.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/styleguide.css' %}" />
+  <link rel="stylesheet" href="{% static 'shared/css/components.css' %}" />
+  <link rel="stylesheet" href="{% static 'auth/css/auth.css' %}" />
+</head>
+<body class="auth-body">
+  <div class="auth-layout">
+    <div class="auth-panel-left">
+      <div class="auth-panel-overlay"></div>
+      <div class="auth-panel-content">
+        <a href="/" class="auth-logo">LuxeStay</a>
+        <blockquote class="auth-quote">"Join 500,000+ travelers discovering the world's finest hotels."</blockquote>
+        <div class="auth-perks">
+          <div class="auth-perk">🏆 Earn reward points on every booking</div>
+          <div class="auth-perk">💰 Members-only exclusive rates</div>
+          <div class="auth-perk">✅ Free cancellation on most hotels</div>
+          <div class="auth-perk">🌍 Access to 1,200+ curated properties</div>
+        </div>
+      </div>
+    </div>
+    <div class="auth-panel-right">
+      <div class="auth-form-wrap">
+        <a href="/" class="auth-back-link">← Back to Home</a>
+        <h1 class="auth-title">Create your account</h1>
+        <p class="auth-subtitle">Free to join. Start earning rewards today.</p>
+        {% if form.errors %}
+        <div class="auth-error">
+          {% for field in form %}{% for error in field.errors %}<div>{{ error }}</div>{% endfor %}{% endfor %}
+          {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+        </div>
+        {% endif %}
+        <form action="/auth/signup/" method="post" novalidate>
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-input" name="firstName" placeholder="John" value="{{ form.firstName.value|default:'' }}" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-input" name="lastName" placeholder="Doe" value="{{ form.lastName.value|default:'' }}" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" name="email" placeholder="you@example.com" value="{{ form.email.value|default:'' }}" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" name="password" placeholder="Min. 8 characters" required />
+          </div>
+          <label class="form-check"><input type="checkbox" name="terms" {% if form.terms.value %}checked{% endif %} required /> I agree to the Terms &amp; Privacy Policy</label>
+          <button type="submit" class="btn btn-teal btn-full btn-lg" style="margin-top: 20px;">Create Account</button>
+        </form>
+        <p class="auth-switch-text">Already have an account? <a href="/auth/login/" class="auth-switch-link">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

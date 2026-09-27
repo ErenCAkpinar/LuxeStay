@@ -1,0 +1,108 @@
+Watching for file changes with StatReloader
+[19/May/2026 11:30:00] "GET / HTTP/1.1" 200 20563
+[19/May/2026 11:30:00,581] - Broken pipe from ('127.0.0.1', 63408)
+[19/May/2026 11:30:25] "GET / HTTP/1.1" 200 20563
+[19/May/2026 11:30:25,796] - Broken pipe from ('127.0.0.1', 52300)
+[19/May/2026 11:30:25] "GET /static/shared/css/globals.css HTTP/1.1" 200 2005
+[19/May/2026 11:30:25] "GET /hotels/ HTTP/1.1" 200 12393
+[19/May/2026 11:30:25,853] - Broken pipe from ('127.0.0.1', 52301)
+[19/May/2026 11:30:25,856] - Broken pipe from ('127.0.0.1', 52303)
+[19/May/2026 11:30:42] "GET / HTTP/1.1" 200 20563
+[19/May/2026 11:30:42,683] - Broken pipe from ('127.0.0.1', 52309)
+[19/May/2026 11:31:23] "GET / HTTP/1.1" 200 20563
+[19/May/2026 11:31:23] "GET /static/shared/css/globals.css HTTP/1.1" 200 2005
+[19/May/2026 11:31:23] "GET /static/shared/css/styleguide.css HTTP/1.1" 200 1687
+[19/May/2026 11:31:23] "GET /static/home/css/home.css HTTP/1.1" 200 8861
+[19/May/2026 11:31:23] "GET /static/shared/css/components.css HTTP/1.1" 200 37522
+[19/May/2026 11:31:23] "GET /static/img/hero-bg.jpg HTTP/1.1" 200 47888
+Not Found: /favicon.ico
+[19/May/2026 11:31:23] "GET /favicon.ico HTTP/1.1" 404 9919
+[19/May/2026 11:31:26] "GET /hotels/ HTTP/1.1" 200 12393
+[19/May/2026 11:31:26] "GET /static/hotels/css/hotels.css HTTP/1.1" 200 19225
+[19/May/2026 11:31:27] "GET / HTTP/1.1" 200 20563
+[19/May/2026 11:31:27] "GET / HTTP/1.1" 200 20563
+[19/May/2026 11:31:29] "GET /auth/login/ HTTP/1.1" 200 2473
+[19/May/2026 11:31:29] "GET /static/auth/css/auth.css HTTP/1.1" 200 9692
+[19/May/2026 11:31:34] "GET /auth/signup/ HTTP/1.1" 200 2847
+[19/May/2026 11:31:45] "GET /?firstName=joh&lastName=de&email=ee%40gmail.com&password=egebaba31&terms=on HTTP/1.1" 200 20563
+[19/May/2026 11:31:45] "GET /static/shared/css/globals.css HTTP/1.1" 304 0
+[19/May/2026 11:31:45] "GET /static/shared/css/components.css HTTP/1.1" 304 0
+[19/May/2026 11:31:45] "GET /static/home/css/home.css HTTP/1.1" 304 0
+[19/May/2026 11:31:45] "GET /static/shared/css/styleguide.css HTTP/1.1" 304 0
+[19/May/2026 11:31:50] "GET /hotels/?destination=&checkIn=&checkOut=&guests=2 HTTP/1.1" 200 12393
+[19/May/2026 11:31:50] "GET /static/hotels/css/hotels.css HTTP/1.1" 304 0
+[19/May/2026 11:31:51] "GET /auth/login/ HTTP/1.1" 200 2473
+[19/May/2026 11:31:51] "GET /static/auth/css/auth.css HTTP/1.1" 304 0
+[19/May/2026 11:32:17] "GET /hotels/ HTTP/1.1" 200 12393
+[19/May/2026 11:32:17] "GET /static/shared/css/globals.css HTTP/1.1" 304 0
+[19/May/2026 11:32:17] "GET /static/shared/css/styleguide.css HTTP/1.1" 304 0
+[19/May/2026 11:32:17] "GET /static/shared/css/components.css HTTP/1.1" 304 0
+[19/May/2026 11:32:17] "GET /static/hotels/css/hotels.css HTTP/1.1" 304 0
+[19/May/2026 11:32:18] "GET / HTTP/1.1" 200 20563
+[19/May/2026 11:32:18] "GET /static/home/css/home.css HTTP/1.1" 304 0
+[19/May/2026 11:32:18] "GET /offers/ HTTP/1.1" 200 15111
+[19/May/2026 11:32:18] "GET /static/offers/css/offers.css HTTP/1.1" 200 11706
+[19/May/2026 11:32:19] "GET /destinations/ HTTP/1.1" 200 10932
+[19/May/2026 11:32:19] "GET /static/destinations/css/destinations.css HTTP/1.1" 200 11481
+[19/May/2026 11:32:20] "GET /contact/ HTTP/1.1" 200 10263
+[19/May/2026 11:32:20] "GET /static/contact/css/contact.css HTTP/1.1" 200 7638
+[19/May/2026 11:32:22] "GET /about/ HTTP/1.1" 200 10390
+[19/May/2026 11:32:22] "GET /static/about/css/about.css HTTP/1.1" 200 10871
+[19/May/2026 11:32:24] "GET / HTTP/1.1" 200 20563
+[19/May/2026 11:32:27] "GET /hotels/detail/?id=h1 HTTP/1.1" 200 16681
+C:\Users\Ducky\Desktop\LuxeStay\luxestay\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Ducky\Desktop\LuxeStay\pages\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Ducky\Desktop\LuxeStay\pages\views.py changed, reloading.
+Watching for file changes with StatReloader
+[19/May/2026 11:40:11] "GET /auth/signup/ HTTP/1.1" 200 3040
+[19/May/2026 11:40:11] "GET /dashboard/ HTTP/1.1" 302 0
+[19/May/2026 11:40:11,422] - Broken pipe from ('127.0.0.1', 53887)
+[19/May/2026 11:42:17] "GET / HTTP/1.1" 200 20685
+[19/May/2026 11:42:17] "GET /static/shared/css/globals.css HTTP/1.1" 304 0
+[19/May/2026 11:42:17] "GET /static/shared/css/styleguide.css HTTP/1.1" 304 0
+[19/May/2026 11:42:17] "GET /static/shared/css/components.css HTTP/1.1" 304 0
+[19/May/2026 11:42:17] "GET /static/home/css/home.css HTTP/1.1" 304 0
+[19/May/2026 11:42:17] "GET /static/img/hero-bg.jpg HTTP/1.1" 304 0
+[19/May/2026 11:42:18] "GET /auth/signup/ HTTP/1.1" 200 3040
+[19/May/2026 11:42:18] "GET /static/auth/css/auth.css HTTP/1.1" 304 0
+[19/May/2026 11:42:32] "POST /auth/signup/ HTTP/1.1" 302 0
+[19/May/2026 11:42:32] "GET /dashboard/ HTTP/1.1" 200 6854
+[19/May/2026 11:42:32] "GET /static/dashboard/css/dashboard.css HTTP/1.1" 200 15288
+[19/May/2026 11:42:37] "GET / HTTP/1.1" 200 20687
+[19/May/2026 11:42:38] "GET /hotels/ HTTP/1.1" 200 12383
+[19/May/2026 11:42:38] "GET /static/hotels/css/hotels.css HTTP/1.1" 304 0
+[19/May/2026 11:42:40] "GET /offers/ HTTP/1.1" 200 15101
+[19/May/2026 11:42:40] "GET /static/offers/css/offers.css HTTP/1.1" 304 0
+[19/May/2026 11:42:40] "GET /destinations/ HTTP/1.1" 200 10922
+[19/May/2026 11:42:40] "GET /static/destinations/css/destinations.css HTTP/1.1" 304 0
+[19/May/2026 11:42:41] "GET /contact/ HTTP/1.1" 200 10253
+[19/May/2026 11:42:41] "GET /static/contact/css/contact.css HTTP/1.1" 304 0
+[19/May/2026 11:42:43] "GET /about/ HTTP/1.1" 200 10380
+[19/May/2026 11:42:43] "GET /static/about/css/about.css HTTP/1.1" 304 0
+[19/May/2026 11:42:44] "GET / HTTP/1.1" 200 20687
+[19/May/2026 11:42:47] "GET /dashboard/ HTTP/1.1" 200 6854
+[19/May/2026 11:42:49] "GET /dashboard/bookings/ HTTP/1.1" 200 3858
+[19/May/2026 11:42:50] "GET /dashboard/saved/ HTTP/1.1" 200 3509
+[19/May/2026 11:42:50] "GET /dashboard/bookings/ HTTP/1.1" 200 3858
+[19/May/2026 11:42:51] "GET /dashboard/saved/ HTTP/1.1" 200 3509
+[19/May/2026 11:42:51] "GET /dashboard/profile/ HTTP/1.1" 200 7736
+[19/May/2026 11:42:52] "GET /dashboard/profile/ HTTP/1.1" 200 7736
+[19/May/2026 11:42:52] "GET /dashboard/profile/ HTTP/1.1" 200 7736
+[19/May/2026 11:42:52] "GET /dashboard/notifications/ HTTP/1.1" 200 3945
+[19/May/2026 11:42:52] "GET /dashboard/notifications/ HTTP/1.1" 200 3945
+[19/May/2026 11:42:52] "GET /dashboard/notifications/ HTTP/1.1" 200 3945
+[19/May/2026 11:42:53] "GET /dashboard/payment-methods/ HTTP/1.1" 200 5448
+[19/May/2026 11:42:53] "GET /dashboard/payment-methods/ HTTP/1.1" 200 5448
+[19/May/2026 11:42:53] "GET /dashboard/reviews/ HTTP/1.1" 200 3749
+[19/May/2026 11:42:54] "GET /dashboard/rewards/ HTTP/1.1" 200 7406
+[19/May/2026 11:42:54] "GET /auth/logout/ HTTP/1.1" 302 0
+[19/May/2026 11:42:54] "GET / HTTP/1.1" 200 20685
+[19/May/2026 11:42:56] "GET /auth/login/ HTTP/1.1" 200 2647
+[19/May/2026 11:43:39] "GET / HTTP/1.1" 200 20685
+Not Found: /admin
+[19/May/2026 11:43:43] "GET /admin HTTP/1.1" 404 10071
+[19/May/2026 13:20:20,537] - Broken pipe from ('127.0.0.1', 61135)
+[19/May/2026 13:20:20,541] - Broken pipe from ('127.0.0.1', 53032)
+[19/May/2026 13:20:20,542] - Broken pipe from ('127.0.0.1', 62185)
